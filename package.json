@@ -1,6 +1,6 @@
 {
-  "name": "discord.js-components-bot",
-  "description": "Discord.js bot template with components system",
+  "name": "globed-gremlin-bot",
+  "description": "A Discord bot that posts daily gremlins submitted by members and accepted by moderators",
   "license": "MIT",
   "private": true,
   "main": "dist/index.js",
@@ -22,7 +22,7 @@
     "@discordjs/ws": "^1.0.2"
   },
   "devDependencies": {
-    "@types/node": "^20.11.17",
+    "@types/node": "^20.11.24",
     "prettier": "^3.2.5",
     "typescript": "^5.3.3"
   }
