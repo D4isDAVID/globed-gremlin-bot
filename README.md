@@ -21,5 +21,6 @@ Created using the [D4isDAVID/discord.js-components-bot] template.
 - `npm run deploy` - Deploy commands to Discord
 - `npm run start` - Start your bot
 
+[d4isdavid/discord.js-components-bot]: https://github.com/D4isDAVID/discord.js-components-bot
 [prettier]: https://prettier.io
 [typescript]: https://typescriptlang.org
