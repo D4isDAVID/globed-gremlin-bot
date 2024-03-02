@@ -1,0 +1,26 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./database.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Gremlin {
+  id          Int     @id @default(autoincrement())
+  guildId     String
+  channelId   String
+  messageId   String
+  submitterId String
+  imageUrl    String
+  quote       String?
+}
+
+model GremlinsConfig {
+  guildId              String  @unique
+  dailyDay             Int     @default(1)
+  dailyGmtHour         Int     @default(0)
+  dailyChannelId       String?
+  submissionsChannelId String?
+}

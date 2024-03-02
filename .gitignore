@@ -4,6 +4,10 @@ node_modules/
 # TypeScript out dir
 dist/
 
+# Prisma database
+/prisma/database.db
+/prisma/database.db-journal
+
 # Environment files
 .env*
 !.env.example

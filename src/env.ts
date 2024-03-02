@@ -1,6 +1,7 @@
 import { Client } from '@discordjs/core';
 import { REST } from '@discordjs/rest';
 import { WebSocketManager } from '@discordjs/ws';
+import { PrismaClient } from '@prisma/client';
 import { env } from 'node:process';
 
 const toEnvBool = (str?: string) => (str === 'false' ? false : Boolean(str));
@@ -19,5 +20,6 @@ export const gateway = new WebSocketManager({
     shardCount,
 });
 
+export const prisma = new PrismaClient();
 export const client = new Client({ rest, gateway });
 export const api = client.api;
