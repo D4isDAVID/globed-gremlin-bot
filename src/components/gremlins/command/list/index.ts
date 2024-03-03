@@ -28,7 +28,7 @@ export default {
             interaction.application_id,
             interaction.token,
             {
-                embeds: [await embed(page, totalPages, guildId)],
+                embeds: [await embed(page, totalPages, count, guildId)],
                 components: [await row(page, totalPages)],
             },
         );

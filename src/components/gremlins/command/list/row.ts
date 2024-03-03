@@ -9,22 +9,27 @@ export default async (
     page: number,
     totalPages: number,
 ): Promise<APIActionRowComponent<APIMessageActionRowComponent>> => {
-    const prev = pageButton.stateful((page - 1).toString());
+    const first = pageButton.stateful('1_'); // prevents duplicate ids
+    first.emoji = { name: '⏪' };
+    if (page <= 1) first.disabled = true;
+
+    const prev = pageButton.stateful(`${page - 1}`);
     prev.emoji = { name: '⬅️' };
-    prev.label = 'Previous';
     if (page - 1 <= 0) prev.disabled = true;
 
-    const refresh = pageButton.stateful(page.toString());
+    const refresh = pageButton.stateful(`${page}`);
     refresh.emoji = { name: '🔃' };
-    refresh.label = 'Refresh';
 
-    const next = pageButton.stateful((page + 1).toString());
+    const next = pageButton.stateful(`${page + 1}`);
     next.emoji = { name: '➡️' };
-    next.label = 'Next';
     if (page + 1 > totalPages) next.disabled = true;
+
+    const last = pageButton.stateful(`${totalPages}__`); // prevents duplicate ids
+    last.emoji = { name: '⏩' };
+    if (page >= totalPages) last.disabled = true;
 
     return {
         type: ComponentType.ActionRow,
-        components: [prev, refresh, next],
+        components: [first, prev, refresh, next, last],
     };
 };
