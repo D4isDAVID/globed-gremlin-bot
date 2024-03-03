@@ -4,3 +4,4 @@
 - [`deploy.ts`](./deploy.ts) - code for deploying commands to Discord
 - [`env.ts`](./env.ts) - wrapper for environment variables and Discord clients
 - [`index.ts`](./index.ts) - the bot's entry point
+- [`scrape-gremlins.ts`](./scrape-gremlins.ts) - code for scraping old gremlins
