@@ -89,7 +89,7 @@ export default {
                 guildId: interaction.guild_id!,
                 channelId: interaction.channel.id,
                 messageId: message.id,
-                submitterId: interaction.member!.user.id,
+                submitterId: message.author.id,
                 imageUrl: attachment.url,
                 quote: message.content
                     ? `"${message.content.split('\n')[0]}"`
