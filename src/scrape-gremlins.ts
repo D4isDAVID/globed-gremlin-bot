@@ -47,24 +47,30 @@ const { channelId } = (await prompts({
 })) as { channelId: string };
 if (!channelId) exit(1);
 
-const { firstUserId } = (await prompts({
-    type: 'text',
-    name: 'firstUserId',
-    message: 'What is the ID of the user that added the gremlins?',
-    validate: (value) => !!value,
-})) as { firstUserId: string };
-if (!firstUserId) exit(1);
-
-const userIds = [firstUserId];
+const userIds = [];
 while (true) {
     const { userId } = (await prompts({
         type: 'text',
         name: 'userId',
-        message: 'What is the ID of another user? (optional)',
+        message: 'What is the ID of a user that added the gremlins?',
+        validate: (value) =>
+            userIds.length === 0 && !value
+                ? 'Must provide at least 1 ID'
+                : true,
     })) as { userId: string };
-    if (!userId) break;
+    if (!userId) {
+        const { valid } = (await prompts({
+            type: 'confirm',
+            name: 'valid',
+            message: `Are these valid user IDs? (${userIds.join(', ')})`,
+            initial: true,
+        })) as { valid: boolean };
+        if (valid) break;
+        continue;
+    }
     userIds.push(userId);
 }
+if (userIds.length === 0) exit(1);
 
 let batch = 1;
 let count = 0;
