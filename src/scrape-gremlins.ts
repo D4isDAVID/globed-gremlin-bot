@@ -47,6 +47,32 @@ const { channelId } = (await prompts({
 })) as { channelId: string };
 if (!channelId) exit(1);
 
+const { dailyChannelId } = (await prompts({
+    type: 'text',
+    name: 'dailyChannelId',
+    message: 'What is the ID of the old daily gremlins channel?',
+    validate: async (value) =>
+        await api.channels
+            .get(value)
+            .then((channel) => {
+                if (
+                    ![
+                        ChannelType.AnnouncementThread,
+                        ChannelType.GuildAnnouncement,
+                        ChannelType.GuildText,
+                        ChannelType.PrivateThread,
+                        ChannelType.PublicThread,
+                    ].includes(channel.type)
+                )
+                    return false;
+                if ((channel as APITextChannel).guild_id !== guildId)
+                    return false;
+                return true;
+            })
+            .catch((e) => e.message),
+})) as { dailyChannelId: string };
+if (!dailyChannelId) exit(1);
+
 const userIds = [];
 while (true) {
     const { userId } = (await prompts({
@@ -74,10 +100,38 @@ if (userIds.length === 0) exit(1);
 
 let batch = 1;
 let count = 0;
+let prevMessageId = null;
+let oldImageUrls = new Set<string>();
 
+while (true) {
+    const query: RESTGetAPIChannelMessagesQuery = { limit: 100 };
+    if (prevMessageId) query.before = prevMessageId;
+
+    const messages = await api.channels.getMessages(dailyChannelId, query);
+    if (messages.length === 0) break;
+
+    for await (const message of messages) {
+        if (!message.content.match(/gremlin of the day #[0-9]+/i)) continue;
+
+        const attachment = message.attachments[0];
+        const embed = message.embeds[0];
+
+        if (
+            (!attachment || !attachment.content_type?.startsWith('image')) &&
+            (!embed || !embed.url)
+        )
+            continue;
+
+        oldImageUrls.add(attachment?.url || embed!.url!);
+    }
+
+    prevMessageId = messages[messages.length - 1]!.id;
+}
+
+console.log(`${oldImageUrls.size} old daily gremlins found.`);
 stdout.write('Scraping... ');
 
-let prevMessageId = null;
+prevMessageId = null;
 while (true) {
     const query: RESTGetAPIChannelMessagesQuery = { limit: 100 };
     if (prevMessageId) query.before = prevMessageId;
@@ -94,6 +148,8 @@ while (true) {
         const attachment = message.attachments[0];
         if (!attachment || !attachment.content_type?.startsWith('image'))
             continue;
+
+        if (oldImageUrls.has(attachment.url)) continue;
 
         let submitted = false;
         for await (const userId of userIds) {
