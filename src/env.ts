@@ -1,4 +1,4 @@
-import { Client } from '@discordjs/core';
+import { Client, GatewayIntentBits } from '@discordjs/core';
 import { REST } from '@discordjs/rest';
 import { WebSocketManager } from '@discordjs/ws';
 import { PrismaClient } from '@prisma/client';
@@ -15,7 +15,7 @@ export const exitOnEventError = toEnvBool(env.EXIT_ON_EVENT_ERROR);
 export const rest = new REST({ version: '10' }).setToken(botToken);
 export const gateway = new WebSocketManager({
     token: botToken,
-    intents: 0,
+    intents: GatewayIntentBits.MessageContent,
     rest,
     shardCount,
 });

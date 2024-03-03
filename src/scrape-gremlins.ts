@@ -7,6 +7,7 @@ import { exit, stdout } from 'process';
 import prompts from 'prompts';
 import { clearLine, moveCursor } from 'readline';
 import { SUBMISSION_EMOJI } from './components/gremlins/command/constants.js';
+import { getMessageImageUrls } from './components/gremlins/utils.js';
 import { api, prisma } from './env.js';
 
 const { guildId } = (await prompts({
@@ -113,22 +114,14 @@ while (true) {
     for await (const message of messages) {
         if (!message.content.match(/gremlin of the day #[0-9]+/i)) continue;
 
-        const attachment = message.attachments[0];
-        const embed = message.embeds[0];
-
-        if (
-            (!attachment || !attachment.content_type?.startsWith('image')) &&
-            (!embed || !embed.url)
-        )
-            continue;
-
-        oldImageUrls.add(attachment?.url || embed!.url!);
+        const urls = await getMessageImageUrls(message);
+        for (const url of urls) oldImageUrls.add(url);
     }
 
     prevMessageId = messages[messages.length - 1]!.id;
 }
 
-console.log(`${oldImageUrls.size} old daily gremlins found.`);
+console.log(`${oldImageUrls.size} unique old daily gremlins found.`);
 stdout.write('Scraping... ');
 
 prevMessageId = null;
@@ -144,12 +137,6 @@ while (true) {
 
     for await (const message of messages) {
         if (!message.reactions?.length) continue;
-
-        const attachment = message.attachments[0];
-        if (!attachment || !attachment.content_type?.startsWith('image'))
-            continue;
-
-        if (oldImageUrls.has(attachment.url)) continue;
 
         let submitted = false;
         for await (const userId of userIds) {
@@ -173,31 +160,47 @@ while (true) {
         }
         if (!submitted) continue;
 
-        const existing = await prisma.gremlin.findFirst({
-            where: {
-                channelId,
-                messageId: message.id,
-            },
-        });
-        if (existing) continue;
+        const urls = await getMessageImageUrls(message);
 
-        stdout.write(message.id);
+        let filteredContent = message.content;
+        for (const url of urls) {
+            filteredContent = filteredContent.replaceAll(url, '');
+        }
 
-        await prisma.gremlin.create({
-            data: {
-                guildId,
-                channelId,
-                messageId: message.id,
-                submitterId: message.author.id,
-                imageUrl: attachment.url,
-                quote: message.content ? `"${message.content}"` : null,
-            },
-        });
+        for await (const url of urls) {
+            if (oldImageUrls.has(url)) continue;
 
-        count++;
+            const existing = await prisma.gremlin.findFirst({
+                where: {
+                    channelId,
+                    messageId: message.id,
+                    imageUrl: url,
+                },
+            });
+            if (existing) continue;
 
-        moveCursor(stdout, -message.id.length, 0);
-        clearLine(stdout, 1);
+            stdout.write(message.id);
+
+            const quote = filteredContent
+                .replace(url, '')
+                .trim()
+                .split('\n')[0];
+            await prisma.gremlin.create({
+                data: {
+                    guildId,
+                    channelId,
+                    messageId: message.id,
+                    submitterId: message.author.id,
+                    imageUrl: url,
+                    quote: quote ? `"${quote}"` : null,
+                },
+            });
+
+            count++;
+
+            moveCursor(stdout, -message.id.length, 0);
+            clearLine(stdout, 1);
+        }
     }
 
     prevMessageId = messages[messages.length - 1]!.id;

@@ -1,5 +1,5 @@
 import { APIEmbed, Snowflake } from '@discordjs/core';
-import { messageLink, userMention } from '@discordjs/formatters';
+import { bold, italic, messageLink, userMention } from '@discordjs/formatters';
 import { prisma } from '../../../../env.js';
 import { LIST_PAGE_SIZE } from '../constants.js';
 
@@ -27,8 +27,15 @@ export default async (
         });
 
         embed.fields = gremlins.map((s) => ({
-            name: `Gremlin ID ${s.id}`,
-            value: `${messageLink(s.channelId, s.messageId)} - ${s.quote ? `${s.quote} ` : ''}by ${userMention(s.submitterId)}`,
+            name: `ID #${s.id}`,
+            value: [
+                s.quote ? bold(s.quote) : '',
+                italic(
+                    `Submitted by ${userMention(s.submitterId)} in ${messageLink(s.channelId, s.messageId)}`,
+                ),
+                '',
+                s.imageUrl,
+            ].join('\n'),
         }));
     }
 
