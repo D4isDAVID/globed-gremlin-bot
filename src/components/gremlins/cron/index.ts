@@ -88,7 +88,10 @@ export const createDailyGremlinTask = async (guildId: Snowflake) => {
                     ),
                 );
             }
-            content.push('', gremlin.imageUrl);
+            content.push(
+                '',
+                `${gremlin.imageUrl} - bot by ${userMention('258650797171015680')}`,
+            );
 
             await prisma.gremlin.delete({
                 where: {
