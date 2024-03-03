@@ -6,8 +6,8 @@ import { createStatefulInteraction } from '../../../../stateful.js';
 
 export default createStatefulInteraction<Modal>({
     data: {
-        custom_id: 'add_quote',
-        title: 'Add Quote',
+        custom_id: 'edit_quote',
+        title: 'Edit Quote',
         components: [
             {
                 type: ComponentType.ActionRow,
@@ -44,8 +44,7 @@ export default createStatefulInteraction<Modal>({
             interaction.application_id,
             interaction.token,
             {
-                content: `Quote added: ${submission.quote}`,
-                components: [],
+                content: `Quote edited: ${submission.quote}`,
             },
         );
     },

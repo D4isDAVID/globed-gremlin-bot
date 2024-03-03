@@ -6,9 +6,9 @@ import modal from './modal.js';
 export default createStatefulInteraction<Button>({
     data: {
         type: ComponentType.Button,
-        custom_id: 'add_quote',
+        custom_id: 'edit_quote',
         style: ButtonStyle.Secondary,
-        label: 'Add Quote',
+        label: 'Edit Quote',
         emoji: { name: '💬' },
     },
     async execute({ data: interaction, api, state: submissionId }) {

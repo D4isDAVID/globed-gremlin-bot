@@ -7,7 +7,7 @@ import { prisma } from '../../../../env.js';
 import { mapChatInputOptionValues } from '../../../interactions.js';
 import { Subcommand } from '../../../subcommands.js';
 import { SUBMISSION_EMOJI } from '../constants.js';
-import addQuote from './add-quote/index.js';
+import editQuote from './edit-quote/index.js';
 
 export default {
     data: {
@@ -108,7 +108,7 @@ export default {
                           {
                               type: ComponentType.ActionRow,
                               components: [
-                                  addQuote.stateful(gremlin.id.toString()),
+                                  editQuote.stateful(gremlin.id.toString()),
                               ],
                           },
                       ],
