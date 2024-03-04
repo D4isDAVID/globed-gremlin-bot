@@ -1,13 +1,13 @@
-import { ApplicationCommandType, MessageFlags } from '@discordjs/core';
+import { ApplicationCommandType } from '@discordjs/core';
 import { heading } from '@discordjs/formatters';
-import { getBotUser } from '../../cache/events/ready.js';
-import { MessageCommand } from '../../data.js';
+import { getBotUser } from '../../../cache/events/ready.js';
+import { MessageCommand } from '../../../data.js';
 import modal from './modal.js';
 
 export default {
     data: {
         type: ApplicationCommandType.Message,
-        name: 'Edit Daily Gremlin Quote',
+        name: 'Edit Gremlin Quote',
         default_member_permissions: '0',
         dm_permission: false,
     },
@@ -20,21 +20,18 @@ export default {
             'i',
         );
 
+        let state = messageId;
         if (
-            message.author.id !== getBotUser()!.id ||
-            !message.content.match(titleRegex)
+            message.author.id === getBotUser()!.id &&
+            message.content.match(titleRegex)
         ) {
-            await api.interactions.reply(interaction.id, interaction.token, {
-                content: "This isn't a daily gremlin.",
-                flags: MessageFlags.Ephemeral,
-            });
-            return;
+            state += 'daily';
         }
 
         await api.interactions.createModal(
             interaction.id,
             interaction.token,
-            modal.stateful(messageId),
+            modal.stateful(state),
         );
     },
 } satisfies MessageCommand;
