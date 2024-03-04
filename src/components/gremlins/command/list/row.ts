@@ -9,7 +9,7 @@ export default async (
     page: number,
     totalPages: number,
 ): Promise<APIActionRowComponent<APIMessageActionRowComponent>> => {
-    const first = pageButton.stateful('1_'); // prevents duplicate ids
+    const first = pageButton.stateful('first');
     first.emoji = { name: '⏪' };
     if (page <= 1) first.disabled = true;
 
@@ -24,7 +24,7 @@ export default async (
     next.emoji = { name: '➡️' };
     if (page + 1 > totalPages) next.disabled = true;
 
-    const last = pageButton.stateful(`${totalPages}__`); // prevents duplicate ids
+    const last = pageButton.stateful('last');
     last.emoji = { name: '⏩' };
     if (page >= totalPages) last.disabled = true;
 

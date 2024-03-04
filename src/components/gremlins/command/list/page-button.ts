@@ -25,7 +25,18 @@ const pageButton = createStatefulInteraction<Button>({
         });
 
         const totalPages = Math.ceil(count / LIST_PAGE_SIZE);
-        let page = parseInt(state);
+        let page: number;
+        switch (state) {
+            case 'first':
+                page = 1;
+                break;
+            case 'last':
+                page = totalPages || 1;
+                break;
+            default:
+                page = parseInt(state);
+                break;
+        }
         if (page > totalPages) page = totalPages || 1;
 
         await api.interactions.editReply(
