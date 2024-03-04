@@ -20,6 +20,15 @@ export default {
         const messageId = interaction.data.target_id;
         const message = interaction.data.resolved.messages[messageId]!;
 
+        if (message.author.bot) {
+            await api.interactions.reply(interaction.id, interaction.token, {
+                content:
+                    "This command isn't allowed to be used on bot messages.",
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+
         await api.interactions.defer(interaction.id, interaction.token, {
             flags: MessageFlags.Ephemeral,
         });
