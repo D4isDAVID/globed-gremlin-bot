@@ -75,27 +75,43 @@ const { dailyChannelId } = (await prompts({
 if (!dailyChannelId) exit(1);
 
 const userIds = [];
+const userNames = [];
 while (true) {
     const { userId } = (await prompts({
         type: 'text',
         name: 'userId',
         message: 'What is the ID of a user that added the gremlins?',
-        validate: (value) =>
-            userIds.length === 0 && !value
-                ? 'Must provide at least 1 ID'
-                : true,
+        validate: (value) => {
+            if (!value)
+                return userIds.length !== 0 || 'Must provide at least 1 ID';
+
+            return api.users
+                .get(value)
+                .then(() => true)
+                .catch((e) => e.message);
+        },
     })) as { userId: string };
+
     if (!userId) {
-        const { valid } = (await prompts({
-            type: 'confirm',
-            name: 'valid',
-            message: `Are these valid user IDs? (${userIds.join(', ')})`,
-            initial: true,
-        })) as { valid: boolean };
+        if (userIds.length === 0) break;
+        const { valid } = (await prompts(
+            {
+                type: 'confirm',
+                name: 'valid',
+                message: `Are these valid users? (${userNames.join(', ')})`,
+                initial: false,
+            },
+            {
+                onCancel: () => exit(1),
+            },
+        )) as { valid: boolean };
         if (valid) break;
         continue;
     }
-    userIds.push(userId);
+
+    const user = await api.users.get(userId);
+    userIds.push(user.id);
+    userNames.push(user.username);
 }
 if (userIds.length === 0) exit(1);
 
