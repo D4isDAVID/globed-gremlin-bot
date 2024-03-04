@@ -5,8 +5,9 @@ import {
 } from '@discordjs/core';
 import { prisma } from '../../../../env.js';
 import { MessageCommand } from '../../../data.js';
+import { getMessageImageUrls } from '../../utils.js';
 import { SUBMISSION_EMOJI } from '../constants.js';
-import editQuote from './edit-quote/index.js';
+import editQuote from './edit-new-gremlin-quote/index.js';
 
 export default {
     data: {
@@ -19,69 +20,78 @@ export default {
         const messageId = interaction.data.target_id;
         const message = interaction.data.resolved.messages[messageId]!;
 
-        const attachment = message.attachments[0];
-        if (!attachment || !attachment.content_type?.startsWith('image')) {
-            await api.interactions.reply(interaction.id, interaction.token, {
-                content:
-                    "This message doesn't have an image attachment as its first attachment.",
-                flags: MessageFlags.Ephemeral,
-            });
-            return;
-        }
-
         await api.interactions.defer(interaction.id, interaction.token, {
             flags: MessageFlags.Ephemeral,
         });
 
-        const existing = await prisma.gremlin.findFirst({
-            where: {
-                channelId: interaction.channel.id,
-                messageId: message.id,
-            },
-        });
-        if (existing) {
+        const urls = await getMessageImageUrls(message);
+        if (urls.length === 0) {
             await api.interactions.editReply(
                 interaction.application_id,
                 interaction.token,
                 {
-                    content: 'This gremlin has already been submitted.',
+                    content:
+                        "This messages doesn't have any image attachments or embeds.",
                 },
             );
             return;
         }
 
-        const gremlin = await prisma.gremlin.create({
-            data: {
-                guildId: interaction.guild_id!,
-                channelId: interaction.channel.id,
-                messageId: message.id,
-                submitterId: message.author.id,
-                imageUrl: attachment.url,
-                quote: message.content ? `"${message.content}"` : null,
-            },
-        });
+        let filteredContent = message.content;
+        for (const url of urls) {
+            filteredContent = filteredContent.replaceAll(url, '');
+        }
+        const quote = filteredContent.trim().split('\n')[0];
+
+        let count = 0;
+        for await (const url of urls) {
+            const existing = await prisma.gremlin.findFirst({
+                where: { imageUrl: url },
+            });
+            if (existing) continue;
+
+            await prisma.gremlin.create({
+                data: {
+                    guildId: interaction.guild_id!,
+                    channelId: interaction.channel.id,
+                    messageId: message.id,
+                    submitterId: message.author.id,
+                    imageUrl: url,
+                    quote: quote ? `"${quote}"` : null,
+                },
+            });
+
+            count++;
+        }
+
+        if (count === 0) {
+            await api.interactions.editReply(
+                interaction.application_id,
+                interaction.token,
+                {
+                    content: 'This gremlin is already submitted.',
+                },
+            );
+            return;
+        }
 
         await api.interactions.editReply(
             interaction.application_id,
             interaction.token,
             {
-                content: `Gremlin added. ${gremlin.quote ? '' : 'No quote attached.'}`,
-                components: gremlin.quote
-                    ? undefined
-                    : [
-                          {
-                              type: ComponentType.ActionRow,
-                              components: [
-                                  editQuote.stateful(gremlin.id.toString()),
-                              ],
-                          },
-                      ],
+                content: `${count} gremlin${count === 1 ? '' : 's'} added with ${quote ? `quote: ${quote}` : 'no quote attached.'}`,
+                components: [
+                    {
+                        type: ComponentType.ActionRow,
+                        components: [editQuote.stateful(`${messageId}`)],
+                    },
+                ],
             },
         );
 
         await api.channels.addMessageReaction(
-            gremlin.channelId,
-            gremlin.messageId,
+            interaction.channel.id,
+            message.id,
             SUBMISSION_EMOJI,
         );
     },

@@ -17,13 +17,13 @@ export default {
             flags: MessageFlags.Ephemeral,
         });
 
-        const gremlin = await prisma.gremlin.findFirst({
+        const count = await prisma.gremlin.count({
             where: {
                 channelId: interaction.channel.id,
-                messageId: messageId,
+                messageId,
             },
         });
-        if (!gremlin) {
+        if (count === 0) {
             await api.interactions.editReply(
                 interaction.application_id,
                 interaction.token,
@@ -34,9 +34,10 @@ export default {
             return;
         }
 
-        await prisma.gremlin.delete({
+        await prisma.gremlin.deleteMany({
             where: {
-                id: gremlin.id,
+                channelId: interaction.channel.id,
+                messageId,
             },
         });
 
@@ -44,13 +45,13 @@ export default {
             interaction.application_id,
             interaction.token,
             {
-                content: 'Gremlin removed.',
+                content: `${count} gremlins removed.`,
             },
         );
 
         await api.channels.deleteOwnMessageReaction(
-            gremlin.channelId,
-            gremlin.messageId,
+            interaction.channel.id,
+            messageId,
             SUBMISSION_EMOJI,
         );
     },

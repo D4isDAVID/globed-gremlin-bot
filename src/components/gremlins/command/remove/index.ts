@@ -30,9 +30,7 @@ export default {
         });
 
         const gremlin = await prisma.gremlin.findFirst({
-            where: {
-                id: gremlinId,
-            },
+            where: { id: gremlinId },
         });
         if (!gremlin) {
             await api.interactions.editReply(
@@ -45,10 +43,15 @@ export default {
             return;
         }
 
-        await prisma.gremlin.delete({
+        const count = await prisma.gremlin.count({
             where: {
-                id: gremlin.id,
+                channelId: gremlin.channelId,
+                messageId: gremlin.messageId,
             },
+        });
+
+        await prisma.gremlin.delete({
+            where: { id: gremlin.id },
         });
 
         await api.interactions.editReply(
@@ -59,10 +62,11 @@ export default {
             },
         );
 
-        await api.channels.deleteOwnMessageReaction(
-            gremlin.channelId,
-            gremlin.messageId,
-            SUBMISSION_EMOJI,
-        );
+        if (count === 1)
+            await api.channels.deleteOwnMessageReaction(
+                gremlin.channelId,
+                gremlin.messageId,
+                SUBMISSION_EMOJI,
+            );
     },
 } satisfies Subcommand;

@@ -166,6 +166,7 @@ while (true) {
         for (const url of urls) {
             filteredContent = filteredContent.replaceAll(url, '');
         }
+        const quote = filteredContent.trim().split('\n')[0];
 
         for await (const url of urls) {
             if (oldImageUrls.has(url)) continue;
@@ -181,10 +182,6 @@ while (true) {
 
             stdout.write(message.id);
 
-            const quote = filteredContent
-                .replace(url, '')
-                .trim()
-                .split('\n')[0];
             await prisma.gremlin.create({
                 data: {
                     guildId,
