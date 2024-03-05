@@ -9,6 +9,8 @@ import {
 } from '@discordjs/formatters';
 import { Gremlin } from '@prisma/client';
 import { ScheduledTask, schedule } from 'node-cron';
+import { parse } from 'node:path';
+import { URL } from 'node:url';
 import { api, prisma } from '../../../env.js';
 
 const tasks = new Map<Snowflake, ScheduledTask>();
@@ -55,23 +57,29 @@ export const createDailyGremlinTask = async (guildId: Snowflake) => {
             if (!dailyChannel) return;
 
             let gremlin;
-            let imageValid = false;
+            let imageBuffer;
 
-            while (!imageValid) {
+            while (!imageBuffer) {
                 gremlin = (
                     (await prisma.$queryRaw`SELECT * FROM Gremlin WHERE guildId = ${guildId} ORDER BY RANDOM() LIMIT 1`) as Gremlin[]
                 )[0];
 
                 if (!gremlin) return;
 
-                imageValid = (
-                    await fetch(gremlin.imageUrl, {
-                        method: 'HEAD',
-                    })
-                ).ok;
+                const res = await fetch(gremlin.imageUrl);
+                if (!res.ok) {
+                    if (res.status === 404)
+                        await prisma.gremlin.delete({
+                            where: { id: gremlin.id },
+                        });
+                    continue;
+                }
+
+                imageBuffer = Buffer.from(await res.arrayBuffer());
             }
 
             if (!gremlin) return;
+            if (!imageBuffer) return;
 
             const content = [];
             content.push(heading(`Gremlin of the Day #${config.dailyDay}`));
@@ -88,10 +96,6 @@ export const createDailyGremlinTask = async (guildId: Snowflake) => {
                     ),
                 );
             }
-            content.push(
-                '',
-                `${gremlin.imageUrl} - bot by ${userMention('258650797171015680')}`,
-            );
 
             await prisma.gremlin.delete({
                 where: {
@@ -99,8 +103,17 @@ export const createDailyGremlinTask = async (guildId: Snowflake) => {
                 },
             });
 
+            const imagePathName = new URL(gremlin.imageUrl).pathname;
+            const imageName = parse(imagePathName).base;
+
             await api.channels.createMessage(dailyChannel.id, {
                 content: content.join('\n'),
+                files: [
+                    {
+                        name: imageName,
+                        data: imageBuffer,
+                    },
+                ],
             });
 
             await prisma.gremlinsConfig.update({
