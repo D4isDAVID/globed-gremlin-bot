@@ -32,7 +32,7 @@ export const createDailyGremlinTask = async (guildId: Snowflake) => {
         })
     )?.dailyGmtHour;
 
-    if (!hour) return;
+    if (typeof hour !== 'number') return;
 
     const task = schedule(
         `0 ${hour} * * *`,
