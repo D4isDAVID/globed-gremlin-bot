@@ -6,8 +6,8 @@ import { Subcommand } from '../../../subcommands.js';
 export default {
     data: {
         type: ApplicationCommandOptionType.Subcommand,
-        name: 'edit-quote',
-        description: 'Edit the quote of a gremlin',
+        name: 'edit-description',
+        description: 'Edit the description of a gremlin',
         options: [
             {
                 type: ApplicationCommandOptionType.Integer,
@@ -17,16 +17,18 @@ export default {
             },
             {
                 type: ApplicationCommandOptionType.String,
-                name: 'quote',
-                description: 'The new quote',
+                name: 'description',
+                description: 'The new description',
                 required: true,
             },
         ],
     },
     async execute({ data: interaction, api, subcommandData }) {
-        const { id, quote } = mapChatInputOptionValues(subcommandData) as {
+        const { id, description } = mapChatInputOptionValues(
+            subcommandData,
+        ) as {
             id: string;
-            quote: string;
+            description: string;
         };
 
         await api.interactions.defer(interaction.id, interaction.token, {
@@ -49,14 +51,14 @@ export default {
 
         await prisma.gremlin.update({
             where: { id: gremlin.id },
-            data: { quote },
+            data: { description },
         });
 
         await api.interactions.editReply(
             interaction.application_id,
             interaction.token,
             {
-                content: `Quote edited to: ${quote}`,
+                content: `Description edited to: ${description}`,
             },
         );
     },

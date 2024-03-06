@@ -183,6 +183,7 @@ while (true) {
             filteredContent = filteredContent.replaceAll(url, '');
         }
         const quote = filteredContent.trim().split('\n')[0];
+        const description = quote ? `"${quote}"` : null;
 
         for await (const url of urls) {
             if (oldImageUrls.has(url)) continue;
@@ -205,7 +206,7 @@ while (true) {
                     messageId: message.id,
                     submitterId: message.author.id,
                     imageUrl: url,
-                    quote: quote ? `"${quote}"` : null,
+                    description,
                 },
             });
 

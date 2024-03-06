@@ -7,7 +7,7 @@ import { prisma } from '../../../../env.js';
 import { MessageCommand } from '../../../data.js';
 import { getMessageImageUrls } from '../../utils.js';
 import { SUBMISSION_EMOJI } from '../constants.js';
-import editQuote from './edit-new-gremlin-quote/index.js';
+import editDescription from './edit-new-gremlin-description/index.js';
 
 export default {
     data: {
@@ -51,6 +51,7 @@ export default {
             filteredContent = filteredContent.replaceAll(url, '');
         }
         const quote = filteredContent.trim().split('\n')[0];
+        const description = quote ? `"${quote}"` : null;
 
         let count = 0;
         for await (const url of urls) {
@@ -66,7 +67,7 @@ export default {
                     messageId: message.id,
                     submitterId: message.author.id,
                     imageUrl: url,
-                    quote: quote ? `"${quote}"` : null,
+                    description,
                 },
             });
 
@@ -88,11 +89,11 @@ export default {
             interaction.application_id,
             interaction.token,
             {
-                content: `${count} gremlin${count === 1 ? '' : 's'} added with ${quote ? `quote: ${quote}` : 'no quote attached.'}`,
+                content: `${count} gremlin${count === 1 ? '' : 's'} added with ${description ? `quote: ${description}` : 'no quote attached.'}`,
                 components: [
                     {
                         type: ComponentType.ActionRow,
-                        components: [editQuote.stateful(`${messageId}`)],
+                        components: [editDescription.stateful(`${messageId}`)],
                     },
                 ],
             },

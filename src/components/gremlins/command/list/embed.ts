@@ -29,7 +29,7 @@ export default async (
         embed.fields = gremlins.map((s) => ({
             name: `ID #${s.id}`,
             value: [
-                s.quote ? bold(s.quote) : '',
+                s.description ? bold(s.description) : '',
                 italic(
                     `Submitted by ${userMention(s.submitterId)} in ${messageLink(s.channelId, s.messageId)}`,
                 ),

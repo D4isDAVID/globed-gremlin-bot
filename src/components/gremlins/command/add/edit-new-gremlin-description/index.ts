@@ -6,9 +6,9 @@ import modal from './modal.js';
 export default createStatefulInteraction<Button>({
     data: {
         type: ComponentType.Button,
-        custom_id: 'edit_new_gremlin_quote',
+        custom_id: 'edit_new_gremlin_description',
         style: ButtonStyle.Secondary,
-        label: 'Edit Quote',
+        label: 'Edit Description',
         emoji: { name: '💬' },
     },
     async execute({ data: interaction, api, state }) {

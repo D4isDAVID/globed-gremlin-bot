@@ -14,7 +14,7 @@ model Gremlin {
   messageId   String
   submitterId String
   imageUrl    String
-  quote       String?
+  description String?
 }
 
 model GremlinsConfig {

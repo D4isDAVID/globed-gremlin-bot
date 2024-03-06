@@ -83,8 +83,8 @@ export const createDailyGremlinTask = async (guildId: Snowflake) => {
 
             const content = [];
             content.push(heading(`Gremlin of the Day #${config.dailyDay}`));
-            if (gremlin.quote) {
-                content.push(heading(gremlin.quote, HeadingLevel.Two));
+            if (gremlin.description) {
+                content.push(heading(gremlin.description, HeadingLevel.Two));
             }
             content.push(
                 italic(`submitted by ${userMention(gremlin.submitterId)}`),

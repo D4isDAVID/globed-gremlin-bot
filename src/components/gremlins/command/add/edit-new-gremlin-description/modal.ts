@@ -6,16 +6,16 @@ import { createStatefulInteraction } from '../../../../stateful.js';
 
 export default createStatefulInteraction<Modal>({
     data: {
-        custom_id: 'edit_new_gremlin_quote',
-        title: 'Edit New Gremlin Quote',
+        custom_id: 'edit_new_gremlin_description',
+        title: 'Edit New Gremlin Description',
         components: [
             {
                 type: ComponentType.ActionRow,
                 components: [
                     {
                         type: ComponentType.TextInput,
-                        custom_id: 'quote',
-                        label: 'Quote',
+                        custom_id: 'description',
+                        label: 'Description',
                         style: TextInputStyle.Short,
                         required: true,
                         placeholder: '"eeby gremlin"',
@@ -25,8 +25,8 @@ export default createStatefulInteraction<Modal>({
         ],
     },
     async execute({ data: interaction, api, state: messageId }) {
-        const { quote } = mapModalTextInputValues(interaction.data) as {
-            quote: string;
+        const { description } = mapModalTextInputValues(interaction.data) as {
+            description: string;
         };
 
         await api.interactions.deferMessageUpdate(
@@ -53,14 +53,14 @@ export default createStatefulInteraction<Modal>({
 
         await prisma.gremlin.updateMany({
             where: { messageId },
-            data: { quote },
+            data: { description },
         });
 
         await api.interactions.editReply(
             interaction.application_id,
             interaction.token,
             {
-                content: `Quote edited: ${quote}`,
+                content: `Description edited: ${description}`,
             },
         );
     },

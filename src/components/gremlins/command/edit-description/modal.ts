@@ -7,16 +7,16 @@ import { createStatefulInteraction } from '../../../stateful.js';
 
 export default createStatefulInteraction<Modal>({
     data: {
-        custom_id: 'edit_gremlin_quote',
-        title: 'Edit Gremlin Quote',
+        custom_id: 'edit_gremlin_description',
+        title: 'Edit Gremlin Description',
         components: [
             {
                 type: ComponentType.ActionRow,
                 components: [
                     {
                         type: ComponentType.TextInput,
-                        custom_id: 'quote',
-                        label: 'Quote',
+                        custom_id: 'description',
+                        label: 'Description',
                         style: TextInputStyle.Short,
                         required: true,
                         placeholder: '"eeby gremlin"',
@@ -26,8 +26,8 @@ export default createStatefulInteraction<Modal>({
         ],
     },
     async execute({ data: interaction, api, state }) {
-        const { quote } = mapModalTextInputValues(interaction.data) as {
-            quote: string;
+        const { description } = mapModalTextInputValues(interaction.data) as {
+            description: string;
         };
 
         const daily = state.includes('daily');
@@ -55,14 +55,14 @@ export default createStatefulInteraction<Modal>({
 
             await prisma.gremlin.updateMany({
                 where: { channelId, messageId },
-                data: { quote },
+                data: { description },
             });
 
             await api.interactions.editReply(
                 interaction.application_id,
                 interaction.token,
                 {
-                    content: `Quote edited for ${count} gremlin${count === 1 ? '' : 's'}: ${quote}`,
+                    content: `Description edited for ${count} gremlin${count === 1 ? '' : 's'}: ${description}`,
                 },
             );
             return;
@@ -71,12 +71,12 @@ export default createStatefulInteraction<Modal>({
         const message = await api.channels.getMessage(channelId, messageId);
         let content = message.content;
 
-        const formatted = heading(quote, HeadingLevel.Two);
-        const quoteRegex = new RegExp(heading('.*', HeadingLevel.Two));
+        const formatted = heading(description, HeadingLevel.Two);
+        const descriptionRegex = new RegExp(heading('.*', HeadingLevel.Two));
         const titleRegex = new RegExp(heading('.*'));
 
-        if (content.match(quoteRegex)) {
-            content = content.replace(quoteRegex, formatted);
+        if (content.match(descriptionRegex)) {
+            content = content.replace(descriptionRegex, formatted);
         } else {
             const titleMatch = content.match(titleRegex);
 
@@ -97,7 +97,7 @@ export default createStatefulInteraction<Modal>({
         await api.interactions.editReply(
             interaction.application_id,
             interaction.token,
-            { content: 'Quote edited.' },
+            { content: 'Description edited.' },
         );
     },
 });
