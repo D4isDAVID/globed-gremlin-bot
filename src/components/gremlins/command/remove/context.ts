@@ -6,7 +6,7 @@ import { SUBMISSION_EMOJI } from '../constants.js';
 export default {
     data: {
         type: ApplicationCommandType.Message,
-        name: 'Remove Gremlin',
+        name: 'Remove gremlin',
         default_member_permissions: '0',
         dm_permission: false,
     },

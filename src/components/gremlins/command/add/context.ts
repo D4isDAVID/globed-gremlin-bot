@@ -12,7 +12,7 @@ import editDescription from './edit-new-gremlin-description/index.js';
 export default {
     data: {
         type: ApplicationCommandType.Message,
-        name: 'Add Gremlin',
+        name: 'Add gremlin',
         default_member_permissions: '0',
         dm_permission: false,
     },

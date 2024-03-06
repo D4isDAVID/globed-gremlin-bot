@@ -7,7 +7,7 @@ import modal from './modal.js';
 export default {
     data: {
         type: ApplicationCommandType.Message,
-        name: 'Edit Gremlin Description',
+        name: 'Edit gremlin description',
         default_member_permissions: '0',
         dm_permission: false,
     },
