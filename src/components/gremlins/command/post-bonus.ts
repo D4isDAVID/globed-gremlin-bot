@@ -7,7 +7,7 @@ import { postGremlin } from '../utils/post-gremlin.js';
 export default {
     data: {
         type: ApplicationCommandOptionType.Subcommand,
-        name: 'bonus-gremlin',
+        name: 'post-bonus',
         description: 'Post a bonus gremlin.',
     },
     async execute({ data: interaction, api }) {
