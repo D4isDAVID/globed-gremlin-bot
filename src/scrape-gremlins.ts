@@ -7,7 +7,7 @@ import { exit, stdout } from 'process';
 import prompts from 'prompts';
 import { clearLine, moveCursor } from 'readline';
 import { SUBMISSION_EMOJI } from './components/gremlins/command/constants.js';
-import { getMessageImageUrls } from './components/gremlins/utils.js';
+import { getMessageImageUrls } from './components/gremlins/utils/message-image-urls.js';
 import { api, prisma } from './env.js';
 
 const { guildId } = (await prompts({

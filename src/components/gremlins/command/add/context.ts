@@ -5,7 +5,7 @@ import {
 } from '@discordjs/core';
 import { prisma } from '../../../../env.js';
 import { MessageCommand } from '../../../data.js';
-import { getMessageImageUrls } from '../../utils.js';
+import { getMessageImageUrls } from '../../utils/message-image-urls.js';
 import { SUBMISSION_EMOJI } from '../constants.js';
 import editDescription from './edit-new-gremlin-description/index.js';
 

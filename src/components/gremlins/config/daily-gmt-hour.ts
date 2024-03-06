@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType, MessageFlags } from '@discordjs/core';
 import { prisma } from '../../../env.js';
 import { mapChatInputOptionValues } from '../../interactions.js';
 import { Subcommand } from '../../subcommands.js';
-import { createDailyGremlinTask } from '../cron/index.js';
+import { createDailyGremlinTask } from '../cron/daily.js';
 
 export default {
     data: {

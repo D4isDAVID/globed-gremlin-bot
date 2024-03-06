@@ -1,6 +1,6 @@
 import { GatewayDispatchEvents } from '@discordjs/core';
 import { GatewayEvent } from '../../data.js';
-import { deleteDailyGremlinTask } from './index.js';
+import { deleteDailyGremlinTask } from './daily.js';
 
 export default {
     name: GatewayDispatchEvents.GuildDelete,

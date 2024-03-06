@@ -1,7 +1,7 @@
 import { GatewayDispatchEvents } from '@discordjs/core';
 import { prisma } from '../../../env.js';
 import { GatewayEvent } from '../../data.js';
-import { createDailyGremlinTask } from './index.js';
+import { createDailyGremlinTask } from './daily.js';
 
 export default {
     name: GatewayDispatchEvents.GuildCreate,
