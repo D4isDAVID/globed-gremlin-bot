@@ -3,6 +3,8 @@ import { createSubcommandsCommand } from '../../subcommands.js';
 import dailyChannel from './daily-channel.js';
 import dailyDay from './daily-day.js';
 import dailyGmtHour from './daily-gmt-hour.js';
+import monthlyResetKeep from './monthly-reset-keep.js';
+import monthlyReset from './monthly-reset.js';
 import submissionsChannel from './submissions-channel.js';
 import view from './view/index.js';
 
@@ -16,5 +18,13 @@ export default createSubcommandsCommand(
             dm_permission: false,
         },
     },
-    [dailyDay, dailyChannel, dailyGmtHour, submissionsChannel, view],
+    [
+        dailyDay,
+        dailyChannel,
+        dailyGmtHour,
+        submissionsChannel,
+        view,
+        monthlyReset,
+        monthlyResetKeep,
+    ],
 );

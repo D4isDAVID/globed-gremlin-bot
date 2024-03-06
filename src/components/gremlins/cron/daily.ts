@@ -1,4 +1,5 @@
 import { Snowflake } from '@discordjs/core';
+import { Prisma } from '@prisma/client';
 import { ScheduledTask, schedule } from 'node-cron';
 import { prisma } from '../../../env.js';
 import { postGremlin } from '../utils/post-gremlin.js';
@@ -48,6 +49,36 @@ export const createDailyGremlinTask = async (guildId: Snowflake) => {
                     dailyDay: config.dailyDay + 1,
                 },
             });
+
+            // Monthly reset
+            const date = new Date();
+            date.setDate(date.getDate() + 1);
+            if (config.monthlyReset && date.getDate() === 1) {
+                const id = (
+                    await prisma.gremlin.findMany({
+                        select: {
+                            id: true,
+                        },
+                        orderBy: {
+                            id: 'desc',
+                        },
+                        skip: config.monthlyResetKeep - 1,
+                        take: 1,
+                    })
+                )?.[0]?.id;
+
+                const args: { where: Prisma.GremlinWhereInput } | undefined = id
+                    ? {
+                          where: {
+                              id: {
+                                  lt: id,
+                              },
+                          },
+                      }
+                    : undefined;
+
+                await prisma.gremlin.deleteMany(args);
+            }
         },
         {
             timezone: 'Etc/GMT',

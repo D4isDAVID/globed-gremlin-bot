@@ -31,6 +31,14 @@ export const embed = async (guildId: Snowflake): Promise<APIEmbed> => {
                     ? channelMention(config.submissionsChannelId)
                     : 'None',
             },
+            {
+                name: 'Monthly Reset',
+                value: config.monthlyReset ? 'Enabled' : 'Disabled',
+            },
+            {
+                name: 'Posts Kept After Monthly Reset',
+                value: `${config.monthlyResetKeep}`,
+            },
         ],
         footer: {
             text: 'Last Updated',
