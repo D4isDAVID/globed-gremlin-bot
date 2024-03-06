@@ -1,5 +1,11 @@
 import { APIEmbed, Snowflake } from '@discordjs/core';
-import { bold, italic, messageLink, userMention } from '@discordjs/formatters';
+import {
+    bold,
+    italic,
+    messageLink,
+    spoiler,
+    userMention,
+} from '@discordjs/formatters';
 import { prisma } from '../../../../env.js';
 import { LIST_PAGE_SIZE } from '../constants.js';
 
@@ -33,8 +39,7 @@ export default async (
                 italic(
                     `Submitted by ${userMention(s.submitterId)} in ${messageLink(s.channelId, s.messageId)}`,
                 ),
-                '',
-                s.imageUrl,
+                spoiler(s.imageUrl),
             ].join('\n'),
         }));
     }
