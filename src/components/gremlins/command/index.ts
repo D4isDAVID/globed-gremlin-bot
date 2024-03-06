@@ -1,5 +1,6 @@
 import { ApplicationCommandType } from '@discordjs/core';
 import { createSubcommandsCommand } from '../../subcommands.js';
+import clear from './clear/index.js';
 import editDescription from './edit-description/index.js';
 import list from './list/index.js';
 import postBonus from './post-bonus.js';
@@ -15,5 +16,5 @@ export default createSubcommandsCommand(
             dm_permission: false,
         },
     },
-    [editDescription, remove, list, postBonus],
+    [editDescription, remove, list, postBonus, clear],
 );

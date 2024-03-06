@@ -2,6 +2,7 @@ import { Component } from '../data.js';
 import add from './command/add/context.js';
 import editNewGremlinDescription from './command/add/edit-new-gremlin-description/index.js';
 import editNewGremlinDescriptionModal from './command/add/edit-new-gremlin-description/modal.js';
+import clearButton from './command/clear/button.js';
 import editDescription from './command/edit-description/context.js';
 import editDescriptionModal from './command/edit-description/modal.js';
 import command from './command/index.js';
@@ -20,6 +21,7 @@ export default {
         configViewButton,
         editNewGremlinDescription,
         listPageButton,
+        clearButton,
     ],
     modals: [editNewGremlinDescriptionModal, editDescriptionModal],
 } satisfies Component;
