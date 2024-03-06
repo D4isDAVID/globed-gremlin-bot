@@ -1,5 +1,6 @@
 import { ApplicationCommandType } from '@discordjs/core';
 import { createSubcommandsCommand } from '../../subcommands.js';
+import bonusGremlin from './bonus-gremlin.js';
 import editDescription from './edit-description/index.js';
 import list from './list/index.js';
 import remove from './remove/index.js';
@@ -14,5 +15,5 @@ export default createSubcommandsCommand(
             dm_permission: false,
         },
     },
-    [editDescription, remove, list],
+    [editDescription, remove, list, bonusGremlin],
 );

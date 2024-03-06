@@ -68,6 +68,7 @@ export const createDailyGremlinTask = async (guildId: Snowflake) => {
 
                 const res = await fetch(gremlin.imageUrl);
                 if (!res.ok) {
+                    // TODO: handle this better
                     if (res.status === 404)
                         await prisma.gremlin.delete({
                             where: { id: gremlin.id },
