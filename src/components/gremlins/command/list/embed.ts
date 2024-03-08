@@ -39,7 +39,7 @@ export default async (
                 italic(
                     `Submitted by ${userMention(s.submitterId)} in ${messageLink(s.channelId, s.messageId)}`,
                 ),
-                spoiler(s.imageUrl),
+                spoiler(s.contentUrl),
             ].join('\n'),
         }));
     }

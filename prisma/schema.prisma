@@ -13,7 +13,7 @@ model Gremlin {
   channelId   String
   messageId   String
   submitterId String
-  imageUrl    String
+  contentUrl  String
   description String?
 }
 

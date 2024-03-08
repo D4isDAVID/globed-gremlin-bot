@@ -7,7 +7,7 @@ import { exit, stdout } from 'process';
 import prompts from 'prompts';
 import { clearLine, moveCursor } from 'readline';
 import { SUBMISSION_EMOJI } from './components/gremlins/command/constants.js';
-import { getMessageImageUrls } from './components/gremlins/utils/message-image-urls.js';
+import { getMessageContentUrls } from './components/gremlins/utils/message-content-urls.js';
 import { api, prisma } from './env.js';
 
 const { guildId } = (await prompts({
@@ -118,7 +118,7 @@ if (userIds.length === 0) exit(1);
 let batch = 1;
 let count = 0;
 let prevMessageId = null;
-let oldImageUrls = new Set<string>();
+let oldContentUrls = new Set<string>();
 
 while (true) {
     const query: RESTGetAPIChannelMessagesQuery = { limit: 100 };
@@ -130,14 +130,14 @@ while (true) {
     for await (const message of messages) {
         if (!message.content.match(/gremlin of the day #[0-9]+/i)) continue;
 
-        const urls = await getMessageImageUrls(message);
-        for (const url of urls) oldImageUrls.add(url);
+        const urls = await getMessageContentUrls(message);
+        for (const url of urls) oldContentUrls.add(url);
     }
 
     prevMessageId = messages[messages.length - 1]!.id;
 }
 
-console.log(`${oldImageUrls.size} unique old daily gremlins found.`);
+console.log(`${oldContentUrls.size} unique old daily gremlins found.`);
 stdout.write('Scraping... ');
 
 prevMessageId = null;
@@ -176,7 +176,7 @@ while (true) {
         }
         if (!submitted) continue;
 
-        const urls = await getMessageImageUrls(message);
+        const urls = await getMessageContentUrls(message);
 
         let filteredContent = message.content;
         for (const url of urls) {
@@ -186,13 +186,13 @@ while (true) {
         const description = quote ? `"${quote}"` : null;
 
         for await (const url of urls) {
-            if (oldImageUrls.has(url)) continue;
+            if (oldContentUrls.has(url)) continue;
 
             const existing = await prisma.gremlin.findFirst({
                 where: {
                     channelId,
                     messageId: message.id,
-                    imageUrl: url,
+                    contentUrl: url,
                 },
             });
             if (existing) continue;
@@ -205,7 +205,7 @@ while (true) {
                     channelId,
                     messageId: message.id,
                     submitterId: message.author.id,
-                    imageUrl: url,
+                    contentUrl: url,
                     description,
                 },
             });

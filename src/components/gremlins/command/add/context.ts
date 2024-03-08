@@ -5,7 +5,7 @@ import {
 } from '@discordjs/core';
 import { prisma } from '../../../../env.js';
 import { MessageCommand } from '../../../data.js';
-import { getMessageImageUrls } from '../../utils/message-image-urls.js';
+import { getMessageContentUrls } from '../../utils/message-content-urls.js';
 import { SUBMISSION_EMOJI } from '../constants.js';
 import editDescription from './edit-new-gremlin-description/index.js';
 
@@ -33,14 +33,14 @@ export default {
             flags: MessageFlags.Ephemeral,
         });
 
-        const urls = await getMessageImageUrls(message);
+        const urls = await getMessageContentUrls(message);
         if (urls.length === 0) {
             await api.interactions.editReply(
                 interaction.application_id,
                 interaction.token,
                 {
                     content:
-                        "This messages doesn't have any image attachments or embeds.",
+                        "This messages doesn't have any image/video attachments or embeds.",
                 },
             );
             return;
@@ -56,7 +56,7 @@ export default {
         let count = 0;
         for await (const url of urls) {
             const existing = await prisma.gremlin.findFirst({
-                where: { imageUrl: url },
+                where: { contentUrl: url },
             });
             if (existing) continue;
 
@@ -66,7 +66,7 @@ export default {
                     channelId: interaction.channel.id,
                     messageId: message.id,
                     submitterId: message.author.id,
-                    imageUrl: url,
+                    contentUrl: url,
                     description,
                 },
             });

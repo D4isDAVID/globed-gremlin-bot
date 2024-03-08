@@ -24,16 +24,16 @@ export const postGremlin = async (
     if (!dailyChannel) return 'Invalid daily channel ID set for this server.';
 
     let gremlin;
-    let imageBuffer;
+    let contentBuffer;
 
-    while (!imageBuffer) {
+    while (!contentBuffer) {
         gremlin = (
             (await prisma.$queryRaw`SELECT * FROM Gremlin WHERE guildId = ${config.guildId} ORDER BY RANDOM() LIMIT 1`) as Gremlin[]
         )[0];
 
         if (!gremlin) return 'No gremlins available.';
 
-        const res = await fetch(gremlin.imageUrl);
+        const res = await fetch(gremlin.contentUrl);
         if (!res.ok) {
             // TODO: handle this better
             if (res.status === 404)
@@ -43,11 +43,11 @@ export const postGremlin = async (
             continue;
         }
 
-        imageBuffer = Buffer.from(await res.arrayBuffer());
+        contentBuffer = Buffer.from(await res.arrayBuffer());
     }
 
     if (!gremlin) return 'No gremlins available.';
-    if (!imageBuffer) return 'No valid gremlins available.';
+    if (!contentBuffer) return 'No valid gremlins available.';
 
     const content = [];
     content.push(heading(title));
@@ -63,15 +63,15 @@ export const postGremlin = async (
         );
     }
 
-    const imagePathName = new URL(gremlin.imageUrl).pathname;
-    const imageName = parse(imagePathName).base;
+    const contentPathName = new URL(gremlin.contentUrl).pathname;
+    const contentName = parse(contentPathName).base;
 
     const message = await api.channels.createMessage(config.dailyChannelId!, {
         content: content.join('\n'),
         files: [
             {
-                name: imageName,
-                data: imageBuffer,
+                name: contentName,
+                data: contentBuffer,
             },
         ],
     });
