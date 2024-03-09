@@ -1,5 +1,5 @@
 import { APIEmbed, Snowflake } from '@discordjs/core';
-import { channelMention } from '@discordjs/formatters';
+import { TimestampStyles, channelMention, time } from '@discordjs/formatters';
 import { prisma } from '../../../../env.js';
 
 export const embed = async (guildId: Snowflake): Promise<APIEmbed> => {
@@ -22,8 +22,11 @@ export const embed = async (guildId: Snowflake): Promise<APIEmbed> => {
                     : 'None',
             },
             {
-                name: 'Daily Hour (in GMT)',
-                value: `${config.dailyGmtHour.toString().padStart(2, '0')}:00`,
+                name: 'Daily Hour',
+                value: [
+                    `GMT: ${config.dailyGmtHour.toString().padStart(2, '0')}:00`,
+                    `Local Time: ${time(config.dailyGmtHour, TimestampStyles.ShortTime)}`,
+                ].join('\n'),
             },
             {
                 name: 'Submissions Channel',
