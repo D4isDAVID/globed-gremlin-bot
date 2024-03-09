@@ -115,6 +115,20 @@ while (true) {
 }
 if (userIds.length === 0) exit(1);
 
+const now = new Date();
+const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+const { onlyCurrentMonth } = (await prompts(
+    {
+        type: 'confirm',
+        name: 'onlyCurrentMonth',
+        message: `Only scrape old gremlins for the current month? (${firstDayOfMonth.getMonth()})`,
+        initial: true,
+    },
+    {
+        onCancel: () => exit(1),
+    },
+)) as { onlyCurrentMonth: boolean };
+
 let batch = 1;
 let count = 0;
 let prevMessageId = null;
@@ -141,7 +155,8 @@ console.log(`${oldContentUrls.size} unique old daily gremlins found.`);
 stdout.write('Scraping... ');
 
 prevMessageId = null;
-while (true) {
+let reachedMonth = false;
+while (!reachedMonth) {
     const query: RESTGetAPIChannelMessagesQuery = { limit: 100 };
     if (prevMessageId) query.before = prevMessageId;
 
@@ -152,6 +167,10 @@ while (true) {
     stdout.write(batchMessage);
 
     for await (const message of messages) {
+        if (onlyCurrentMonth && new Date(message.timestamp) < firstDayOfMonth) {
+            reachedMonth = true;
+            break;
+        }
         if (!message.reactions?.length) continue;
 
         let submitted = false;
