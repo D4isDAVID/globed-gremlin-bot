@@ -121,7 +121,7 @@ const { onlyCurrentMonth } = (await prompts(
     {
         type: 'confirm',
         name: 'onlyCurrentMonth',
-        message: `Only scrape old gremlins for the current month? (${firstDayOfMonth.getMonth()})`,
+        message: `Only scrape old gremlins for the current month? (${firstDayOfMonth.getMonth() + 1})`,
         initial: true,
     },
     {
