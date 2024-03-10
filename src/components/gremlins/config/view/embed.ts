@@ -1,6 +1,10 @@
 import { APIEmbed, Snowflake } from '@discordjs/core';
-import { TimestampStyles, channelMention, time } from '@discordjs/formatters';
+import { channelMention } from '@discordjs/formatters';
 import { prisma } from '../../../../env.js';
+import {
+    constantTimeDisplay,
+    timestampDisplay,
+} from '../../utils/daily-timestamp.js';
 
 export const embed = async (guildId: Snowflake): Promise<APIEmbed> => {
     const config = (await prisma.gremlinsConfig.findFirst({
@@ -22,10 +26,10 @@ export const embed = async (guildId: Snowflake): Promise<APIEmbed> => {
                     : 'None',
             },
             {
-                name: 'Daily Hour',
+                name: 'Daily Time',
                 value: [
-                    `GMT: ${config.dailyGmtHour.toString().padStart(2, '0')}:00`,
-                    `Local Time: ${time(config.dailyGmtHour, TimestampStyles.ShortTime)}`,
+                    `UTC: ${constantTimeDisplay(config.dailyHour, config.dailyMinute)}`,
+                    `Local Time: ${timestampDisplay(config.dailyHour, config.dailyMinute)}`,
                 ].join('\n'),
             },
             {

@@ -3,26 +3,28 @@ import { prisma } from '../../../env.js';
 import { mapChatInputOptionValues } from '../../interactions.js';
 import { Subcommand } from '../../subcommands.js';
 import { createDailyGremlinTask } from '../cron/daily.js';
+import {
+    constantTimeDisplay,
+    timestampDisplay,
+} from '../utils/daily-timestamp.js';
 
 export default {
     data: {
         type: ApplicationCommandOptionType.Subcommand,
-        name: 'daily-gmt-hour',
-        description: 'Configurate the gremlins daily hour (in GMT)',
+        name: 'daily-time',
+        description: 'Configurate the gremlins daily posting hour (UTC)',
         options: [
             {
                 type: ApplicationCommandOptionType.Integer,
-                name: 'hour',
-                description: 'The hour (in GMT)',
+                name: 'time',
+                description: 'The time (UTC Unix timestamp in seconds)',
                 required: true,
-                min_value: 0,
-                max_value: 23,
             },
         ],
     },
     async execute({ data: interaction, api, subcommandData }) {
-        const { hour } = mapChatInputOptionValues(subcommandData) as {
-            hour: number;
+        const { time } = mapChatInputOptionValues(subcommandData) as {
+            time: number;
         };
         const guildId = interaction.guild_id!;
 
@@ -30,9 +32,14 @@ export default {
             flags: MessageFlags.Ephemeral,
         });
 
+        const date = new Date(time * 1000);
+
         const config = await prisma.gremlinsConfig.update({
             where: { guildId },
-            data: { dailyGmtHour: hour },
+            data: {
+                dailyHour: date.getUTCHours(),
+                dailyMinute: date.getUTCMinutes(),
+            },
         });
 
         createDailyGremlinTask(guildId);
@@ -41,7 +48,7 @@ export default {
             interaction.application_id,
             interaction.token,
             {
-                content: `Gremlins daily hour (in GMT) set to ${config.dailyGmtHour.toString().padStart(2, '0')}:00.`,
+                content: `Gremlins daily time set to ${constantTimeDisplay(config.dailyHour, config.dailyMinute)} (${timestampDisplay(config.dailyHour, config.dailyMinute)}).`,
             },
         );
     },

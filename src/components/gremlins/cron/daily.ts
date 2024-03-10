@@ -14,21 +14,20 @@ export const deleteDailyGremlinTask = (guildId: Snowflake) => {
 export const createDailyGremlinTask = async (guildId: Snowflake) => {
     deleteDailyGremlinTask(guildId);
 
-    const hour = (
-        await prisma.gremlinsConfig.findFirst({
-            where: {
-                guildId,
-            },
-            select: {
-                dailyGmtHour: true,
-            },
-        })
-    )?.dailyGmtHour;
+    const config = await prisma.gremlinsConfig.findFirst({
+        where: {
+            guildId,
+        },
+        select: {
+            dailyHour: true,
+            dailyMinute: true,
+        },
+    });
 
-    if (typeof hour !== 'number') return;
+    if (!config) return;
 
     const task = schedule(
-        `0 ${hour} * * *`,
+        `${config.dailyMinute} ${config.dailyHour} * * *`,
         async () => {
             const config = await prisma.gremlinsConfig.findFirst({
                 where: {
