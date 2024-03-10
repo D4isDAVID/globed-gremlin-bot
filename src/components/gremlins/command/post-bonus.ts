@@ -8,7 +8,7 @@ export default {
     data: {
         type: ApplicationCommandOptionType.Subcommand,
         name: 'post-bonus',
-        description: 'Post a bonus gremlin.',
+        description: 'Post a bonus gremlin',
     },
     async execute({ data: interaction, api }) {
         await api.interactions.defer(interaction.id, interaction.token, {

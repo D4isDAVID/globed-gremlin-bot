@@ -11,7 +11,7 @@ export default {
     data: {
         type: ApplicationCommandOptionType.Subcommand,
         name: 'clear',
-        description: 'Clear the gremlins list.',
+        description: 'Clear the gremlins list',
     },
     async execute({ data: interaction, api }) {
         await api.interactions.reply(interaction.id, interaction.token, {

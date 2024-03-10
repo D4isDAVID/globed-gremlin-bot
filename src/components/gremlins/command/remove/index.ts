@@ -12,17 +12,15 @@ export default {
         options: [
             {
                 type: ApplicationCommandOptionType.Integer,
-                name: 'gremlin',
+                name: 'id',
                 description: 'The ID of the gremlin',
                 required: true,
             },
         ],
     },
     async execute({ data: interaction, api, subcommandData }) {
-        const { gremlin: gremlinId } = mapChatInputOptionValues(
-            subcommandData,
-        ) as {
-            gremlin: number;
+        const { id } = mapChatInputOptionValues(subcommandData) as {
+            id: number;
         };
 
         await api.interactions.defer(interaction.id, interaction.token, {
@@ -30,7 +28,7 @@ export default {
         });
 
         const gremlin = await prisma.gremlin.findFirst({
-            where: { id: gremlinId },
+            where: { id },
         });
         if (!gremlin) {
             await api.interactions.editReply(
