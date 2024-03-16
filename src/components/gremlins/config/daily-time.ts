@@ -15,7 +15,7 @@ export default {
         description: 'Configurate the gremlins daily posting hour (UTC)',
         options: [
             {
-                type: ApplicationCommandOptionType.Integer,
+                type: ApplicationCommandOptionType.String,
                 name: 'time',
                 description: 'The time (UTC Unix timestamp in seconds)',
                 required: true,
@@ -23,9 +23,20 @@ export default {
         ],
     },
     async execute({ data: interaction, api, subcommandData }) {
-        const { time } = mapChatInputOptionValues(subcommandData) as {
-            time: number;
+        const { time: input } = mapChatInputOptionValues(subcommandData) as {
+            time: string;
         };
+
+        const rawTime = /[0-9]+/.exec(input)?.[0];
+        if (!rawTime) {
+            await api.interactions.reply(interaction.id, interaction.token, {
+                content: 'Your input did not contain a timestamp.',
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+
+        const time = parseInt(rawTime);
         const guildId = interaction.guild_id!;
 
         await api.interactions.defer(interaction.id, interaction.token, {
