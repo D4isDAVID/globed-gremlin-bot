@@ -142,8 +142,6 @@ while (true) {
     if (messages.length === 0) break;
 
     for await (const message of messages) {
-        if (!message.content.match(/gremlin of the day #[0-9]+/i)) continue;
-
         const urls = await getMessageContentUrls(message);
         for (const url of urls) oldContentUrls.add(url);
     }
