@@ -3,8 +3,15 @@
 A Discord bot that posts daily gremlins submitted by members and accepted by moderators.
 Created using the [D4isDAVID/discord.js-components-bot] template.
 
+- [Prerequisites](#prerequisites)
 - [Configuration](#configuration)
 - [Scripts](#scripts)
+
+## Prerequisites
+
+- [Node.js] v20+.
+- A bot in the [Discord Developer Portal].
+  - Must have the **Message Content** intent enabled under the "Bot" section.
 
 ## Configuration
 
@@ -22,6 +29,15 @@ Created using the [D4isDAVID/discord.js-components-bot] template.
 - `npm run deploy` - Deploy commands to Discord
 - `npm run start` - Start your bot
 
+### Prisma Databse Scripts
+
+- `npx prisma generate` - Generate artifacts (when the database schema is changed)
+- `npx prisma db push` - Generate database (located in `prisma/database.db`)
+- `npx prisma migrate deploy` - Apply pending migrations to the database in production
+- `npx prisma migrate dev` - Create a migration from changes in the database schema
+
 [d4isdavid/discord.js-components-bot]: https://github.com/D4isDAVID/discord.js-components-bot
+[node.js]: https://nodejs.org
+[discord developer portal]: https://discord.com/developers/applications
 [prettier]: https://prettier.io
 [typescript]: https://typescriptlang.org
