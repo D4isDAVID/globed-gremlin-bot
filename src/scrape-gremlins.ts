@@ -10,6 +10,7 @@ import { SUBMISSION_EMOJI } from './components/gremlins/command/constants.js';
 import { getMessageContentUrls } from './components/gremlins/utils/message-content-urls.js';
 import { api, prisma } from './env.js';
 
+let guildName;
 const { guildId } = (await prompts({
     type: 'text',
     name: 'guildId',
@@ -17,11 +18,16 @@ const { guildId } = (await prompts({
     validate: async (value) =>
         await api.guilds
             .get(value)
-            .then(() => true)
+            .then((g) => {
+                guildName = g.name;
+                return true;
+            })
             .catch((e) => e.message),
 })) as { guildId: string };
 if (!guildId) exit(1);
+console.log(`Using server: ${guildName}`);
 
+let channelName;
 const { channelId } = (await prompts({
     type: 'text',
     name: 'channelId',
@@ -42,12 +48,15 @@ const { channelId } = (await prompts({
                     return false;
                 if ((channel as APITextChannel).guild_id !== guildId)
                     return false;
+                channelName = channel.name;
                 return true;
             })
             .catch((e) => e.message),
 })) as { channelId: string };
 if (!channelId) exit(1);
+console.log(`Using channel: ${channelName}`);
 
+let dailyChannelName;
 const { dailyChannelId } = (await prompts({
     type: 'text',
     name: 'dailyChannelId',
@@ -68,11 +77,13 @@ const { dailyChannelId } = (await prompts({
                     return false;
                 if ((channel as APITextChannel).guild_id !== guildId)
                     return false;
+                dailyChannelName = channel.name;
                 return true;
             })
             .catch((e) => e.message),
 })) as { dailyChannelId: string };
 if (!dailyChannelId) exit(1);
+console.log(`Using daily channel: ${dailyChannelName}`);
 
 const userIds = [];
 const userNames = [];
@@ -131,6 +142,7 @@ const { onlyCurrentMonth } = (await prompts(
 
 let batch = 1;
 let count = 0;
+let dailyMessageCount = 0;
 let prevMessageId = null;
 let oldContentUrls = new Set<string>();
 
@@ -139,6 +151,7 @@ while (true) {
     if (prevMessageId) query.before = prevMessageId;
 
     const messages = await api.channels.getMessages(dailyChannelId, query);
+    dailyMessageCount += messages.length;
     if (messages.length === 0) break;
 
     for await (const message of messages) {
@@ -149,20 +162,27 @@ while (true) {
     prevMessageId = messages[messages.length - 1]!.id;
 }
 
-console.log(`${oldContentUrls.size} unique old daily gremlins found.`);
+console.log(
+    `Found ${oldContentUrls.size} unique old daily gremlins out of ${dailyMessageCount} messages.`,
+);
 stdout.write('Scraping... ');
 
 prevMessageId = null;
+let messageCount = 0;
 let reachedMonth = false;
 while (!reachedMonth) {
     const query: RESTGetAPIChannelMessagesQuery = { limit: 100 };
     if (prevMessageId) query.before = prevMessageId;
 
     const messages = await api.channels.getMessages(channelId, query);
+    messageCount += messages.length;
     if (messages.length === 0) break;
 
-    const batchMessage = `Batch ${batch}... `;
+    const batchMessage = `Batch ${batch} / ${messageCount} messages... `;
     stdout.write(batchMessage);
+
+    let countMessage = `${count} gremlins`;
+    stdout.write(countMessage);
 
     for await (const message of messages) {
         if (onlyCurrentMonth && new Date(message.timestamp) < firstDayOfMonth) {
@@ -214,8 +234,6 @@ while (!reachedMonth) {
             });
             if (existing) continue;
 
-            stdout.write(message.id);
-
             await prisma.gremlin.create({
                 data: {
                     guildId,
@@ -229,10 +247,14 @@ while (!reachedMonth) {
 
             count++;
 
-            moveCursor(stdout, -message.id.length, 0);
+            moveCursor(stdout, -countMessage.length, 0);
             clearLine(stdout, 1);
+            countMessage = `${count} gremlins`;
+            stdout.write(countMessage);
         }
     }
+    moveCursor(stdout, -countMessage.length, 0);
+    clearLine(stdout, 1);
 
     prevMessageId = messages[messages.length - 1]!.id;
     batch++;
@@ -241,5 +263,6 @@ while (!reachedMonth) {
     clearLine(stdout, 1);
 }
 
-console.log(`${count} gremlins added.`);
+console.log('Done!');
+console.log(`Added ${count} gremlins out of ${messageCount} messages.`);
 exit(0);
