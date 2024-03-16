@@ -1,4 +1,4 @@
-import { ApplicationCommandType } from '@discordjs/core';
+import { ApplicationCommandType, PermissionFlagsBits } from '@discordjs/core';
 import { heading } from '@discordjs/formatters';
 import { getBotUser } from '../../../cache/events/ready.js';
 import { MessageCommand } from '../../../data.js';
@@ -8,7 +8,7 @@ export default {
     data: {
         type: ApplicationCommandType.Message,
         name: 'Edit gremlin description',
-        default_member_permissions: '0',
+        default_member_permissions: `${PermissionFlagsBits.ManageGuild}`,
         dm_permission: false,
     },
     async execute({ data: interaction, api }) {

@@ -1,4 +1,8 @@
-import { ApplicationCommandType, MessageFlags } from '@discordjs/core';
+import {
+    ApplicationCommandType,
+    MessageFlags,
+    PermissionFlagsBits,
+} from '@discordjs/core';
 import { prisma } from '../../../../env.js';
 import { MessageCommand } from '../../../data.js';
 import { SUBMISSION_EMOJI } from '../constants.js';
@@ -7,7 +11,7 @@ export default {
     data: {
         type: ApplicationCommandType.Message,
         name: 'Remove gremlin',
-        default_member_permissions: '0',
+        default_member_permissions: `${PermissionFlagsBits.ManageGuild}`,
         dm_permission: false,
     },
     async execute({ data: interaction, api }) {

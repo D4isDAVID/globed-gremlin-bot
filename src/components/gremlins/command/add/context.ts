@@ -2,6 +2,7 @@ import {
     ApplicationCommandType,
     ComponentType,
     MessageFlags,
+    PermissionFlagsBits,
 } from '@discordjs/core';
 import { prisma } from '../../../../env.js';
 import { MessageCommand } from '../../../data.js';
@@ -13,7 +14,7 @@ export default {
     data: {
         type: ApplicationCommandType.Message,
         name: 'Add gremlin',
-        default_member_permissions: '0',
+        default_member_permissions: `${PermissionFlagsBits.ManageGuild}`,
         dm_permission: false,
     },
     async execute({ data: interaction, api }) {

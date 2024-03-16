@@ -1,4 +1,4 @@
-import { ApplicationCommandType } from '@discordjs/core';
+import { ApplicationCommandType, PermissionFlagsBits } from '@discordjs/core';
 import { createSubcommandsCommand } from '../../subcommands.js';
 import dailyChannel from './daily-channel.js';
 import dailyDay from './daily-day.js';
@@ -16,7 +16,7 @@ export default createSubcommandsCommand(
             type: ApplicationCommandType.ChatInput,
             name: 'gremlins-config',
             description: 'Configurate gremlin submission options',
-            default_member_permissions: '0',
+            default_member_permissions: `${PermissionFlagsBits.ManageGuild}`,
             dm_permission: false,
         },
     },
