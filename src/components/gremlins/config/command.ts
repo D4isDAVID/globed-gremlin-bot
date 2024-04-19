@@ -4,7 +4,7 @@ import dailyChannel from './daily-channel.js';
 import dailyDay from './daily-day.js';
 import dailyHour from './daily-hour.js';
 import dailyMinute from './daily-minute.js';
-import dailyTime from './daily-time.js';
+import dailyTimeUnix from './daily-time-unix.js';
 import monthlyResetKeep from './monthly-reset-keep.js';
 import monthlyReset from './monthly-reset.js';
 import submissionsChannel from './submissions-channel.js';
@@ -25,7 +25,7 @@ export default createSubcommandsCommand(
         dailyChannel,
         dailyHour,
         dailyMinute,
-        dailyTime,
+        dailyTimeUnix,
         submissionsChannel,
         view,
         monthlyReset,
