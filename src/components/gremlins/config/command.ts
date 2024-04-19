@@ -2,9 +2,8 @@ import { ApplicationCommandType, PermissionFlagsBits } from '@discordjs/core';
 import { createSubcommandsCommand } from '../../subcommands.js';
 import dailyChannel from './daily-channel.js';
 import dailyDay from './daily-day.js';
-import dailyHour from './daily-hour.js';
-import dailyMinute from './daily-minute.js';
 import dailyTimeUnix from './daily-time-unix.js';
+import dailyTime from './daily-time.js';
 import monthlyResetKeep from './monthly-reset-keep.js';
 import monthlyReset from './monthly-reset.js';
 import submissionsChannel from './submissions-channel.js';
@@ -23,8 +22,7 @@ export default createSubcommandsCommand(
     [
         dailyDay,
         dailyChannel,
-        dailyHour,
-        dailyMinute,
+        dailyTime,
         dailyTimeUnix,
         submissionsChannel,
         view,

@@ -11,7 +11,7 @@ import {
 export default {
     data: {
         type: ApplicationCommandOptionType.Subcommand,
-        name: 'daily-hour',
+        name: 'daily-time',
         description: 'Configurate the gremlins daily posting hour (UTC)',
         options: [
             {
@@ -22,11 +22,20 @@ export default {
                 min_value: 0,
                 max_value: 23,
             },
+            {
+                type: ApplicationCommandOptionType.Integer,
+                name: 'minute',
+                description: 'The minute (UTC)',
+                required: true,
+                min_value: 0,
+                max_value: 59,
+            },
         ],
     },
     async execute({ data: interaction, api, subcommandData }) {
-        const { hour } = mapChatInputOptionValues(subcommandData) as {
+        const { hour, minute } = mapChatInputOptionValues(subcommandData) as {
             hour: number;
+            minute: number;
         };
         const guildId = interaction.guild_id!;
 
@@ -36,7 +45,7 @@ export default {
 
         const config = await prisma.gremlinsConfig.update({
             where: { guildId },
-            data: { dailyHour: hour },
+            data: { dailyHour: hour, dailyMinute: minute },
         });
 
         createDailyGremlinTask(guildId);
