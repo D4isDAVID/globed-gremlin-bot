@@ -12,7 +12,7 @@ export default {
     data: {
         type: ApplicationCommandOptionType.Subcommand,
         name: 'daily-time',
-        description: 'Configurate the gremlins daily posting hour (UTC)',
+        description: 'Configurate the gremlins daily posting time (UTC)',
         options: [
             {
                 type: ApplicationCommandOptionType.Integer,
