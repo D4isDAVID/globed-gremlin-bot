@@ -18,12 +18,14 @@ export const embed = async (guildId: Snowflake): Promise<APIEmbed> => {
             {
                 name: 'Daily Day',
                 value: `Day ${config.dailyDay}`,
+                inline: true,
             },
             {
                 name: 'Daily Channel',
                 value: config.dailyChannelId
                     ? channelMention(config.dailyChannelId)
                     : 'None',
+                inline: true,
             },
             {
                 name: 'Daily Time',
@@ -31,6 +33,7 @@ export const embed = async (guildId: Snowflake): Promise<APIEmbed> => {
                     `UTC: ${constantTimeDisplay(config.dailyHour, config.dailyMinute)}`,
                     `Local Time: ${timestampDisplay(config.dailyHour, config.dailyMinute)}`,
                 ].join('\n'),
+                inline: true,
             },
             {
                 name: 'Submissions Channel',
@@ -41,10 +44,20 @@ export const embed = async (guildId: Snowflake): Promise<APIEmbed> => {
             {
                 name: 'Monthly Reset',
                 value: config.monthlyReset ? 'Enabled' : 'Disabled',
+                inline: true,
             },
             {
                 name: 'Posts Kept After Monthly Reset',
                 value: `${config.monthlyResetKeep}`,
+                inline: true,
+            },
+            {
+                name: 'Monthly Reset Time',
+                value: [
+                    `UTC: ${constantTimeDisplay(config.monthlyResetHour, config.monthlyResetMinute)}`,
+                    `Local Time: ${timestampDisplay(config.monthlyResetHour, config.monthlyResetMinute)}`,
+                ].join('\n'),
+                inline: true,
             },
         ],
         footer: {

@@ -1,7 +1,9 @@
-import { TimestampStyles, time } from '@discordjs/formatters';
+import { TimestampStyles, inlineCode, time } from '@discordjs/formatters';
 
 export const constantTimeDisplay = (hour: number, minute: number): string =>
-    `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+    inlineCode(
+        `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
+    );
 
 export const timestampDisplay = (hour: number, minute: number): string => {
     const today = new Date();
