@@ -8,17 +8,14 @@ export default {
     type: 'on',
     async execute({ data: guild }) {
         const config = await prisma.gremlinsConfig.findFirst({
-            where: {
-                guildId: guild.id,
-            },
+            where: { guildId: guild.id },
         });
 
-        if (!config)
+        if (!config) {
             await prisma.gremlinsConfig.create({
-                data: {
-                    guildId: guild.id,
-                },
+                data: { guildId: guild.id },
             });
+        }
 
         createDailyGremlinTask(guild.id);
     },

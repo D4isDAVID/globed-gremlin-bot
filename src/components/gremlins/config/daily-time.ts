@@ -6,7 +6,7 @@ import { createDailyGremlinTask } from '../cron/daily.js';
 import {
     constantTimeDisplay,
     timestampDisplay,
-} from '../utils/daily-timestamp.js';
+} from '../utils/timestamp-display.js';
 
 export default {
     data: {

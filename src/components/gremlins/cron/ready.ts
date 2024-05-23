@@ -9,17 +9,14 @@ export default {
     async execute({ data: bot }) {
         for (const guild of bot.guilds) {
             const config = await prisma.gremlinsConfig.findFirst({
-                where: {
-                    guildId: guild.id,
-                },
+                where: { guildId: guild.id },
             });
 
-            if (!config)
+            if (!config) {
                 await prisma.gremlinsConfig.create({
-                    data: {
-                        guildId: guild.id,
-                    },
+                    data: { guildId: guild.id },
                 });
+            }
 
             createDailyGremlinTask(guild.id);
         }

@@ -24,8 +24,9 @@ export default async (
         timestamp: new Date().toISOString(),
     };
 
-    if (totalPages === 0) embed.description = 'No gremlins yet.';
-    else {
+    if (totalPages === 0) {
+        embed.description = 'No gremlins yet.';
+    } else {
         const gremlins = await prisma.gremlin.findMany({
             where: { guildId },
             skip: LIST_PAGE_SIZE * (page - 1),

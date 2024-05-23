@@ -3,7 +3,7 @@ import {
     ComponentType,
     MessageFlags,
 } from '@discordjs/core';
-import { bold, underscore } from '@discordjs/formatters';
+import { bold, underline } from '@discordjs/formatters';
 import { Subcommand } from '../../../subcommands.js';
 import button from './button.js';
 
@@ -15,7 +15,7 @@ export default {
     },
     async execute({ data: interaction, api }) {
         await api.interactions.reply(interaction.id, interaction.token, {
-            content: `Are you sure you want to clear the gremlins list? ${bold(underscore('This will delete all the gremlins from the database!'))}`,
+            content: `Are you sure you want to clear the gremlins list? ${bold(underline('This will delete all the gremlins from the database!'))}`,
             components: [
                 {
                     type: ComponentType.ActionRow,

@@ -1,8 +1,11 @@
-import { Snowflake } from '@discordjs/core';
+import { RESTJSONErrorCodes, Snowflake } from '@discordjs/core';
+import { DiscordAPIError } from '@discordjs/rest';
 import { Prisma } from '@prisma/client';
 import { ScheduledTask, schedule } from 'node-cron';
 import { prisma } from '../../../env.js';
-import { postGremlin } from '../utils/post-gremlin.js';
+import { postAndDeleteGremlin } from '../utils/post-gremlin.js';
+import { fetchRandomGremlin } from '../utils/random-gremlin.js';
+import { getSubmissionsMessage } from '../utils/submissions-message.js';
 
 const tasks = new Map<Snowflake, ScheduledTask>();
 
@@ -40,14 +43,34 @@ export const createDailyGremlinTask = async (guildId: Snowflake) => {
                 return;
             }
 
-            await postGremlin(config, `Gremlin of the Day #${config.dailyDay}`);
+            if (!config.dailyChannelId) return;
 
-            await prisma.gremlinsConfig.update({
-                where: { guildId },
-                data: {
-                    dailyDay: config.dailyDay + 1,
-                },
-            });
+            const result = await fetchRandomGremlin(config);
+            if (typeof result === 'object') {
+                try {
+                    await postAndDeleteGremlin(
+                        config.dailyChannelId,
+                        result.gremlin,
+                        result.contentBuffer,
+                        `Gremlin of the Day #${config.dailyDay}`,
+                        getSubmissionsMessage(config),
+                    );
+
+                    await prisma.gremlinsConfig.update({
+                        where: { guildId },
+                        data: { dailyDay: config.dailyDay + 1 },
+                    });
+                } catch (e) {
+                    if (
+                        e instanceof DiscordAPIError &&
+                        e.code === RESTJSONErrorCodes.UnknownChannel
+                    ) {
+                        return;
+                    }
+
+                    throw e;
+                }
+            }
 
             // Monthly reset
             const date = new Date();

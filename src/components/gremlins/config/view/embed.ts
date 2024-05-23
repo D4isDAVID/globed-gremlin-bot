@@ -4,7 +4,7 @@ import { prisma } from '../../../../env.js';
 import {
     constantTimeDisplay,
     timestampDisplay,
-} from '../../utils/daily-timestamp.js';
+} from '../../utils/timestamp-display.js';
 
 export const embed = async (guildId: Snowflake): Promise<APIEmbed> => {
     const config = (await prisma.gremlinsConfig.findFirst({
