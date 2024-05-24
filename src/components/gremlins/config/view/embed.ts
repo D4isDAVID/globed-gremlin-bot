@@ -40,6 +40,20 @@ export const embed = async (guildId: Snowflake): Promise<APIEmbed> => {
                 value: config.submissionsChannelId
                     ? channelMention(config.submissionsChannelId)
                     : 'None',
+                inline: true,
+            },
+            {
+                name: 'Monthly Gremlin Count',
+                value: `${config.monthlyGremlinCount}`,
+                inline: true,
+            },
+            {
+                name: 'Monthly Time',
+                value: [
+                    `UTC: ${constantTimeDisplay(config.monthlyHour, config.monthlyMinute)}`,
+                    `Local Time: ${timestampDisplay(config.monthlyHour, config.monthlyMinute)}`,
+                ].join('\n'),
+                inline: true,
             },
             {
                 name: 'Monthly Reset',

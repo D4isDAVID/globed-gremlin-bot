@@ -22,6 +22,9 @@ model GremlinsConfig {
   dailyDay             Int     @default(1)
   dailyHour            Int     @default(0)
   dailyMinute          Int     @default(0)
+  monthlyHour          Int     @default(0)
+  monthlyMinute        Int     @default(0)
+  monthlyGremlinCount  Int     @default(0)
   dailyChannelId       String?
   submissionsChannelId String?
   monthlyReset         Boolean @default(false)
