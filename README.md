@@ -34,8 +34,7 @@ Created using the [D4isDAVID/discord.js-components-bot] template.
 ### Prisma Databse Scripts
 
 - `npx prisma generate` - Generate artifacts (when the database schema is changed)
-- `npx prisma db push` - Generate database (located in `prisma/database.db`)
-- `npx prisma migrate deploy` - Apply pending migrations to the database in production
+- `npx prisma migrate deploy` - Apply pending migrations to the database (or generate it)
 - `npx prisma migrate dev` - Create a migration from changes in the database schema
 
 [d4isdavid/discord.js-components-bot]: https://github.com/D4isDAVID/discord.js-components-bot
