@@ -8,10 +8,9 @@
   "scripts": {
     "lint": "prettier --ignore-path .gitignore -c .",
     "format": "prettier --ignore-path .gitignore -w .",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
     "clean": "rimraf dist",
-    "clean:build": "npm run clean && npm run build",
+    "build": "npm run clean && tsc",
+    "build:watch": "tsc --watch",
     "scrape-gremlins": "node --env-file=.env dist/scrape-gremlins.js",
     "deploy": "node --env-file=.env dist/deploy.js",
     "start": "node --env-file=.env ."

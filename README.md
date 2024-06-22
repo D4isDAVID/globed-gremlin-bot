@@ -23,10 +23,9 @@ Created using the [D4isDAVID/discord.js-components-bot] template.
 
 - `npm run lint` - Lint your code with [Prettier]
 - `npm run format` - Format your code with [Prettier]
+- `npm run clean` - Delete the built code
 - `npm run build` - Build your code with the [TypeScript] compiler
 - `npm run build:watch` - Build your code in watch mode
-- `npm run clean` - Delete the built code
-- `npm run clean:build` - Delete the built code and rebuild it
 - `npm run scrape-gremlins` - Scrape old gremlins
 - `npm run deploy` - Deploy commands to Discord
 - `npm run start` - Start your bot
