@@ -56,6 +56,7 @@ export const createMonthlyGremlinTask = async (guildId: Snowflake) => {
             );
 
             const monthName = new Date().toLocaleString('en-US', {
+                timeZone: 'UTC',
                 month: 'long',
             });
             for await (const [
@@ -104,7 +105,7 @@ export const createMonthlyGremlinTask = async (guildId: Snowflake) => {
                 if (i === topGremlins.length - 1) {
                     await api.channels.createMessage(config.dailyChannelId, {
                         content: spoiler(
-                            `these gremlins were the most upvoted in ${monthName}${config.submissionsChannelId ? `, you can submit your gremlins in ${channelLink(message.channel_id)}` : ''}`,
+                            `These gremlins were the most upvoted in ${monthName}${config.submissionsChannelId ? `. Submit your gremlins in ${channelLink(config.submissionsChannelId)}` : ''}`,
                         ),
                         flags: MessageFlags.SuppressEmbeds,
                     });
