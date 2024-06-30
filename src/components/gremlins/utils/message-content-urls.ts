@@ -20,15 +20,16 @@ export const getMessageContentUrls = async (
 
     await Promise.all(
         message.embeds.map(async (embed) => {
-            if (!embed.url) return;
+            const url = embed.video?.url || embed.thumbnail?.url;
+            if (!url) return;
 
             // deprecated but useful for now
             if (embed.type && EMBED_TYPES.includes(embed.type)) {
-                urls.push(embed.url);
+                urls.push(url);
                 return;
             }
 
-            const response = await fetch(embed.url, { method: 'HEAD' });
+            const response = await fetch(url, { method: 'HEAD' });
             if (!response.ok) return;
             if (
                 !CONTENT_TYPES.includes(
@@ -37,7 +38,7 @@ export const getMessageContentUrls = async (
             )
                 return;
 
-            urls.push(embed.url);
+            urls.push(url);
         }),
     );
 
