@@ -1,4 +1,4 @@
-import { ComponentType, TextInputStyle } from '@discordjs/core';
+import { ComponentType, MessageFlags, TextInputStyle } from '@discordjs/core';
 import { prisma } from '../../../../../env.js';
 import { Modal } from '../../../../data.js';
 import { mapModalTextInputValues } from '../../../../interactions.js';
@@ -61,6 +61,7 @@ export default createStatefulInteraction<Modal>({
             interaction.token,
             {
                 content: `Description edited: ${description}`,
+                flags: MessageFlags.SuppressEmbeds,
             },
         );
     },

@@ -1,4 +1,4 @@
-import { APIMessage, Snowflake } from '@discordjs/core';
+import { APIMessage, MessageFlags, Snowflake } from '@discordjs/core';
 import {
     HeadingLevel,
     heading,
@@ -10,13 +10,13 @@ import { Gremlin } from '@prisma/client';
 import { parse } from 'path';
 import { api, prisma } from '../../../env.js';
 
-export const postAndDeleteGremlin = async (
+export async function postAndDeleteGremlin(
     channelId: Snowflake,
     gremlin: Gremlin,
     contentBuffer: Buffer,
     title: string,
     appendix?: string | null,
-): Promise<APIMessage> => {
+): Promise<APIMessage> {
     const content: string[] = [heading(title)];
 
     if (gremlin.description) {
@@ -40,6 +40,7 @@ export const postAndDeleteGremlin = async (
                 data: contentBuffer,
             },
         ],
+        flags: MessageFlags.SuppressEmbeds,
     });
 
     await prisma.gremlin.delete({
@@ -47,4 +48,4 @@ export const postAndDeleteGremlin = async (
     });
 
     return message;
-};
+}

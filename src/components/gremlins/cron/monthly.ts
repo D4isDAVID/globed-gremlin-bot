@@ -98,6 +98,7 @@ export const createMonthlyGremlinTask = async (guildId: Snowflake) => {
                 await api.channels.createMessage(config.dailyChannelId, {
                     content: content.join('\n'),
                     files,
+                    flags: MessageFlags.SuppressEmbeds,
                 });
 
                 if (i === topGremlins.length - 1) {

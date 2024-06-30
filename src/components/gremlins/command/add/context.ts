@@ -97,6 +97,7 @@ export default {
                         components: [editDescription.stateful(`${messageId}`)],
                     },
                 ],
+                flags: MessageFlags.SuppressEmbeds,
             },
         );
 

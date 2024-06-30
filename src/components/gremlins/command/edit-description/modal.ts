@@ -63,6 +63,7 @@ export default createStatefulInteraction<Modal>({
                 interaction.token,
                 {
                     content: `Description edited for ${count} gremlin${count === 1 ? '' : 's'}: ${description}`,
+                    flags: MessageFlags.SuppressEmbeds,
                 },
             );
             return;
