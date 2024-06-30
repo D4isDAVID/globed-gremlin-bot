@@ -127,12 +127,12 @@ while (true) {
 if (userIds.length === 0) exit(1);
 
 const now = new Date();
-const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+const firstDayOfMonth = new Date(now.getUTCFullYear(), now.getUTCMonth(), 1);
 const { onlyCurrentMonth } = (await prompts(
     {
         type: 'confirm',
         name: 'onlyCurrentMonth',
-        message: `Only scrape old gremlins for the current month? (${firstDayOfMonth.getMonth() + 1})`,
+        message: `Only scrape old gremlins for the current month? (${firstDayOfMonth.getUTCMonth() + 1})`,
         initial: true,
     },
     {

@@ -12,7 +12,11 @@ export async function extractTopMonthlyGremlins(
     gremlinCount: number,
 ) {
     const now = new Date();
-    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const firstDayOfMonth = new Date(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        1,
+    );
 
     const reactionCounts: {
         message: APIMessage;
