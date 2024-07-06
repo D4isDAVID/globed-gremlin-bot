@@ -1,11 +1,24 @@
 # Globed Gremlin Bot
 
-A Discord bot that posts daily gremlins submitted by members and accepted by moderators.
+A custom Discord bot for [Globed].
 Created using the [D4isDAVID/discord.js-components-bot] template.
 
+- [Features](#features)
 - [Prerequisites](#prerequisites)
 - [Configuration](#configuration)
 - [Scripts](#scripts)
+
+## Features
+
+### Daily Gremlins
+
+Moderators can add user submissions to a "gremlins list", from which the bot
+will upload random submissions on a daily basis. Optionally, the bot will
+re-post the dailies with the most reactions on a monthly basis.
+
+### Auto Forum Polls
+
+Configure a poll that will be created for new posts in a forum channel.
 
 ## Prerequisites
 
@@ -30,12 +43,13 @@ Created using the [D4isDAVID/discord.js-components-bot] template.
 - `npm run deploy` - Deploy commands to Discord
 - `npm run start` - Start your bot
 
-### Prisma Databse Scripts
+### Prisma Scripts
 
 - `npx prisma generate` - Generate artifacts (when the database schema is changed)
 - `npx prisma migrate deploy` - Apply pending migrations to the database (or generate it)
 - `npx prisma migrate dev` - Create a migration from changes in the database schema
 
+[globed]: https://globed.dev/
 [d4isdavid/discord.js-components-bot]: https://github.com/D4isDAVID/discord.js-components-bot
 [node.js]: https://nodejs.org
 [discord developer portal]: https://discord.com/developers/applications

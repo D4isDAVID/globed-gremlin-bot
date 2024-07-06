@@ -32,3 +32,21 @@ model GremlinsConfig {
   monthlyResetHour     Int     @default(0)
   monthlyResetMinute   Int     @default(0)
 }
+
+model ForumPoll {
+  channelId        String            @unique
+  question         String            @default("My Poll")
+  answers          ForumPollAnswer[]
+  duration         Int               @default(336)
+  allowMultiselect Boolean           @default(false)
+  pin              Boolean           @default(true)
+}
+
+model ForumPollAnswer {
+  id        Int       @id @default(autoincrement())
+  channelId String
+  poll      ForumPoll @relation(fields: [channelId], references: [channelId], onDelete: Cascade)
+  text      String
+  emojiId   String?
+  emojiName String?
+}

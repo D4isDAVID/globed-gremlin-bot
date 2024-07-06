@@ -15,7 +15,7 @@ export const exitOnEventError = toEnvBool(env.EXIT_ON_EVENT_ERROR);
 export const rest = new REST({ version: '10' }).setToken(botToken);
 export const gateway = new WebSocketManager({
     token: botToken,
-    intents: GatewayIntentBits.MessageContent,
+    intents: GatewayIntentBits.Guilds | GatewayIntentBits.MessageContent,
     rest,
     shardCount,
 });
