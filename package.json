@@ -8,8 +8,7 @@
   "scripts": {
     "lint": "prettier --ignore-path .gitignore -c .",
     "format": "prettier --ignore-path .gitignore -w .",
-    "clean": "rimraf dist",
-    "build": "npm run clean && tsc",
+    "build": "tsc",
     "build:watch": "tsc --watch",
     "scrape-gremlins": "node --env-file=.env dist/scrape-gremlins.js",
     "deploy": "node --env-file=.env dist/deploy.js",
@@ -32,7 +31,6 @@
     "@types/prompts": "^2.4.9",
     "prettier": "^3.3.2",
     "prisma": "^5.16.1",
-    "rimraf": "^5.0.7",
     "typescript": "^5.5.3"
   }
 }
