@@ -1,4 +1,4 @@
-import { Gremlin, GremlinsConfig } from '@prisma/client';
+import { GremlinsConfig } from '@prisma/client';
 import { prisma } from '../../../env.js';
 
 export async function fetchRandomGremlin(config: GremlinsConfig) {
@@ -6,9 +6,11 @@ export async function fetchRandomGremlin(config: GremlinsConfig) {
     let contentBuffer;
 
     while (!contentBuffer) {
-        gremlin = (
-            (await prisma.$queryRaw`SELECT * FROM Gremlin WHERE guildId = ${config.guildId} ORDER BY RANDOM() LIMIT 1`) as Gremlin[]
-        )[0];
+        const count = await prisma.gremlin.count();
+        gremlin = await prisma.gremlin.findFirst({
+            where: { guildId: config.guildId },
+            skip: Math.floor(Math.random() * count),
+        });
 
         if (!gremlin) return 'No gremlins available.';
 
