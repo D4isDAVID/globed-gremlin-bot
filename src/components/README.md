@@ -1,7 +1,9 @@
 # Components
 
 - [`cache/`](./cache/) - cache for objects used by other components
+- [`calculator/`](./calculator/) - calculator inside a discord bot
 - [`core/`](./core/) - core features
+- [`forumpolls/`](./forumpolls/) - automatic forum polls
 - [`gremlins/`](./gremlins/) - gremlins submissions system
 - [`ping/`](./ping/) - ping command
 - [`status/`](./status/) - custom presence

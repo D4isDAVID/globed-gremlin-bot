@@ -20,6 +20,10 @@ re-post the dailies with the most reactions on a monthly basis.
 
 Configure a poll that will be created for new posts in a forum channel.
 
+### Calculator
+
+Use a simple calculator through the bot.
+
 ## Prerequisites
 
 - [Node.js] v20+.
