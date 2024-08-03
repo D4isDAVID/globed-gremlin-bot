@@ -1,3 +1,4 @@
+import { messageLink } from '@discordjs/formatters';
 import { GremlinsConfig } from '@prisma/client';
 import { prisma } from '../../../env.js';
 
@@ -17,10 +18,20 @@ export async function fetchRandomGremlin(config: GremlinsConfig) {
         const res = await fetch(gremlin.contentUrl);
         if (!res.ok) {
             // TODO: handle this better
-            if (res.status === 404)
+            if (res.status === 404) {
+                console.log(
+                    [
+                        `Deleting gremlin with ID ${gremlin.id} due to 404:`,
+                        `\tGuild ID: ${gremlin.guildId}`,
+                        `\tMessage Link: ${messageLink(gremlin.channelId, gremlin.messageId)}`,
+                        `\t404 Content URL: ${gremlin.contentUrl}`,
+                    ].join('\n'),
+                );
+
                 await prisma.gremlin.delete({
                     where: { id: gremlin.id },
                 });
+            }
             continue;
         }
 
