@@ -7,8 +7,8 @@ export const closeButton = createStatefulInteraction<Button>({
     data: {
         type: ComponentType.Button,
         custom_id: `calculator_close`,
-        style: ButtonStyle.Danger,
-        label: 'OFF',
+        style: ButtonStyle.Secondary,
+        emoji: { name: '❌' },
     },
     async execute({ api, data: interaction, state: userId }) {
         if (!(await ensureSameUser(api, interaction, userId))) return;
