@@ -1,6 +1,24 @@
 import { messageLink } from '@discordjs/formatters';
-import { GremlinsConfig } from '@prisma/client';
-import { prisma } from '../../../env.js';
+import { Gremlin, GremlinsConfig } from '@prisma/client';
+import { api, prisma } from '../../../env.js';
+import { getMessageContentUrls } from './message-content-urls.js';
+
+async function deleteGremlins(gremlin: Gremlin) {
+    console.log(
+        [
+            `Deleting gremlin(s) due to 404:`,
+            `\tGuild ID: ${gremlin.guildId}`,
+            `\tMessage Link: ${messageLink(gremlin.channelId, gremlin.messageId)}`,
+        ].join('\n'),
+    );
+
+    await prisma.gremlin.deleteMany({
+        where: {
+            channelId: gremlin.channelId,
+            messageId: gremlin.messageId,
+        },
+    });
+}
 
 export async function fetchRandomGremlin(config: GremlinsConfig) {
     let gremlin;
@@ -15,24 +33,33 @@ export async function fetchRandomGremlin(config: GremlinsConfig) {
 
         if (!gremlin) return 'No gremlins available.';
 
-        const res = await fetch(gremlin.contentUrl);
+        let res = await fetch(gremlin.contentUrl);
         if (!res.ok) {
-            // TODO: handle this better
-            if (res.status === 404) {
-                console.log(
-                    [
-                        `Deleting gremlin with ID ${gremlin.id} due to 404:`,
-                        `\tGuild ID: ${gremlin.guildId}`,
-                        `\tMessage Link: ${messageLink(gremlin.channelId, gremlin.messageId)}`,
-                        `\t404 Content URL: ${gremlin.contentUrl}`,
-                    ].join('\n'),
-                );
+            const newUrls = await api.channels
+                .getMessage(gremlin.channelId, gremlin.messageId)
+                .then(getMessageContentUrls)
+                .catch(() => {});
 
-                await prisma.gremlin.delete({
-                    where: { id: gremlin.id },
-                });
+            if (!newUrls) {
+                await deleteGremlins(gremlin);
+                continue;
             }
-            continue;
+
+            gremlin.contentUrl = newUrls[0]!;
+            res = await fetch(gremlin.contentUrl);
+
+            if (!res.ok) {
+                await deleteGremlins(gremlin);
+                continue;
+            }
+
+            await prisma.gremlin.deleteMany({
+                where: {
+                    id: { not: gremlin.id },
+                    channelId: gremlin.channelId,
+                    messageId: gremlin.messageId,
+                },
+            });
         }
 
         contentBuffer = Buffer.from(await res.arrayBuffer());
